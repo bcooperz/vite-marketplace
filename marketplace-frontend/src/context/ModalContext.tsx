@@ -1,5 +1,5 @@
 import ModalTemplate from "@/components/Modal/Modal";
-import { ReactElement, createContext, useCallback, useRef, useState } from "react";
+import { ReactElement, createContext, useRef, useState } from "react";
 import { CreateModalType, ModalDetails } from "../types/modal.types";
 
 // todo: test what happens if you use a component in a parent component without exporting, what error does vite give?
