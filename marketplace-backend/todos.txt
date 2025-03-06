@@ -1,0 +1,7 @@
+ - Implement authentication
+ - Implement centralized config
+ - Implement graceful shutdown
+ - Implement rate limiting
+ - Implement error monitoring (sentry?)
+ - Implement api documentation?
+ - Implement health check

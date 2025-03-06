@@ -1,0 +1,8 @@
+.header {
+  position: fixed;
+  background-color: bisque;
+  display: flex;
+  min-height: var(--header-height);
+  top: 0;
+  width: 100%;
+}

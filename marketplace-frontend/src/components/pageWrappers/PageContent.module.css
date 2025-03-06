@@ -1,0 +1,7 @@
+.pageContents {
+  background-color: rgb(241, 239, 239);
+  display: grid;
+  grid-template-rows: 1fr max-content;
+  min-height: 100vh;
+  padding-top: var(--header-height);
+}

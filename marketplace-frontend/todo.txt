@@ -1,0 +1,14 @@
+Vite
+ Build project layout
+ Routing: 
+   Code split for each route
+   ==Use outlet to render page inside of container
+   Use loaders to load data before user navigates
+
+ Areas:
+  Register
+  Login
+  User configuration
+  Dashboard
+  Product listings & Details
+  Cart

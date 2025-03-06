@@ -1,0 +1,13 @@
+.footer {
+  background-color: lightblue;
+  display: flex;
+  min-height: var(--footer-height);
+  width: 100%;
+}
+
+.dropdownMenuFooter {
+  transform: translateY(-100%);
+  top: 0;
+  /* top: auto; */
+  /* bottom: 100%; */
+}

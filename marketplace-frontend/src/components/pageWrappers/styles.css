@@ -1,0 +1,63 @@
+/* todo: check if there is a better approach to sharing styles and where to save them */
+
+.flex {
+  display: flex;
+}
+
+.flexColumnContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.flexSpaceBetween {
+  display: flex;
+  justify-content: space-between;
+}
+
+.flexGrow {
+  flex-grow: 1;
+}
+
+.navMenu {
+  list-style: none;
+  padding: 0;
+  display: flex;
+}
+
+.navMenu a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  padding: 1rem;
+  flex-grow: 1;
+}
+
+.navMenu li {
+  display: flex;
+  position: relative;
+}
+
+.navMenu li:hover {
+  background-color: aqua;
+}
+
+.navMenu li:hover .dropdownMenu {
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  list-style: none;
+  padding: 0;
+  background-color: white;
+  display: none;
+  min-width: 10rem;
+}
+
+.dropdownMenu li {
+  flex-direction: row;
+}

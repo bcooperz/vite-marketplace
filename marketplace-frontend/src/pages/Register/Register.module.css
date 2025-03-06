@@ -1,0 +1,68 @@
+.columnSpan2 {
+  grid-column: 1 / -1;
+}
+
+.formContainer {
+  container-type: inline-size;
+  container-name: formContainer;
+}
+
+/* Later todo: 
+      - consider if there's a better way to do this
+*/
+
+.registerContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.2rem;
+}
+
+@container formContainer (min-width: 600px) {
+  .registerContainer {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem 2rem;
+  }
+}
+
+/* Placeholder style */
+.selectStyles:required:invalid {
+  color: rgba(192, 192, 192, 1);
+}
+
+option {
+  color: black;
+}
+
+option:disabled {
+  color: rgba(192, 192, 192, 1);
+}
+
+.dobSelectsContainer {
+  display: flex;
+  gap: 1rem;
+  /* display: grid;
+  grid-template-columns: auto auto auto; */
+}
+
+/* todo: can push arrow inwards? */
+.dobSelect {
+  height: 2.5rem;
+  font-size: 1.2rem;
+  padding: 0 0.3rem;
+  border: 1px solid #c0c0c0;
+  border-radius: 4px;
+
+  flex-grow: 1;
+}
+
+.dobSelectYear {
+  flex-grow: 5;
+}
+
+.dobSelectMonth {
+  flex-grow: 10;
+}
+
+.dobSelectDay {
+  flex-grow: 3;
+}
