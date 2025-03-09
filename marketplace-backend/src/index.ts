@@ -5,6 +5,7 @@ import Logger from "./errors/classes/Logger.js";
 import ErrorHandler from "./errors/ErrorHandler.js";
 import ErrorManager from "./errors/ErrorManager.js";
 import { ApiError } from "./types/api/error.types.js";
+import { HttpStatusCode } from "./errors/enums/HttpStatusCode.js";
 
 const app = express();
 const port = 3000;
@@ -19,9 +20,9 @@ const errorManager = new ErrorManager(logger);
       - Programmer errors (unexpected bugs in poorly written code)
       - ==database errors
       - ==validation errors
-      - endpoint not found
+      - ==endpoint not found
       - authentication errors
-
+      - consider how unhandled exceptions should be handled (Express-Async-Errors?)
 */
 
 process.on("uncaughtException", (error: Error) => {
@@ -34,8 +35,7 @@ process.on("uncaughtException", (error: Error) => {
 //What it catches: Rejected Promises that don’t have a .catch() handler.
 //Why it happens: A Promise is rejected but lacks a .catch(), leading to an unhandled rejection.
 process.on("unhandledRejection", (reason, promise) => {
-  console.log("reason", reason);
-  console.log("reason", promise);
+  throw reason;
 });
 
 app.use(bodyParser.json());
@@ -61,6 +61,13 @@ app.use(
     errorHandler.handleError(error, res);
   }
 );
+
+app.use((req: Request, res: Response<ApiError>) => {
+  res.status(HttpStatusCode.NOT_FOUND).json({
+    status: "error",
+    message: `Cannot ${req.method} ${req.path}`,
+  });
+});
 
 app.listen(port, () => {
   console.log("App running on port " + port);

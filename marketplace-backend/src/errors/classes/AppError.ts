@@ -10,7 +10,7 @@ class AppError extends Error {
     statusCode: HttpStatusCode
   ) {
     super(description);
-    // todo: what does setPrototypeOf and captureStackTrace do here?
+    // Fixes quirk with prototype of Error subclasses to be incorrect
     Object.setPrototypeOf(this, new.target.prototype);
     this.isOperational = isOperational;
     this.statusCode = statusCode;

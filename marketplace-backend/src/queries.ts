@@ -7,6 +7,9 @@ import {
   updateUserParamsSchema,
 } from "./schemas/index.js";
 import { InputType } from "./types/api/queries.types.js";
+import { HttpStatusCode } from "./errors/enums/HttpStatusCode.js";
+import AppError from "./errors/classes/AppError.js";
+import NotFoundError from "./errors/classes/NotFoundError.js";
 
 // todo: how can I connect types to what backend returns
 
@@ -48,7 +51,12 @@ export const getUserById = async (
   next: NextFunction
 ) => {
   const { id } = getUserByIdParamsSchema.parse(request.params);
-  await pool.query("SELECTD * FROM users3 WHERE id = $1", [id]);
+  const results = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
+  const user = results.rows?.[0];
+  if (!user) {
+    throw new NotFoundError();
+  }
+  response.status(HttpStatusCode.OK).json(user);
 };
 
 export const createUser = async (
@@ -57,17 +65,15 @@ export const createUser = async (
 ) => {
   const { name, email } = createUserParamsSchema.parse(request.body);
 
-  // todo: how can this be abstracted so I'm not creating db calls directly in controller? - see DDD notes
   const results = await pool.query(
     "INSERT INTO users (name, email) VALUES ($1, $2)",
     [name, email]
   );
 
-  response.status(200).json(results.rows);
+  response.status(HttpStatusCode.OK).json(results.rows);
 };
 
-// todo: test
-export const updateUser = (
+export const updateUser = async (
   request: Request<
     InputType<typeof updateUserParamsSchema>,
     InputType<typeof updateUserBodySchema>
@@ -77,11 +83,13 @@ export const updateUser = (
   const { id } = updateUserParamsSchema.parse(request.params);
   const { name, email } = updateUserBodySchema.parse(request.body);
 
-  pool.query("UPDATE users SET name=$1, email=$2 WHERE id=$3", [
+  await pool.query("UPDATE users SET name=$1, email=$2 WHERE id=$3", [
     name,
     email,
     id,
   ]);
+
+  response.status(HttpStatusCode.OK).send();
 };
 
 // todo
