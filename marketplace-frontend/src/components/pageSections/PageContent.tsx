@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import classes from "./PageContent.module.css";
 
 const PageContent = ({ footer, children }: { children: ReactNode; footer: ReactElement }) => {

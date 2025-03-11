@@ -80,6 +80,7 @@ export default [
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unsafe-assignment": "off",
       "react-compiler/react-compiler": "error",
+      "@typescript-eslint/consistent-type-imports": "error",
     },
   },
 ];

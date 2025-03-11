@@ -1,15 +1,16 @@
 import { Link } from "react-router-dom";
 import classes from "./HeaderNavigation.module.css";
 import useRegisterLoginModalFlow from "@/hooks/useRegisterLoginModalFlow";
+import styles from "@/styles/layout.module.css";
 
 const HeaderNavigation = () => {
   const { RegisterComponent } = useRegisterLoginModalFlow();
 
   return (
     <header className={classes.header}>
-      <nav className="flex flexGrow">
-        <ul className="navMenu flexSpaceBetween flexGrow">
-          <div className="flex">
+      <nav className={styles.flex + " " + styles.flexGrow}>
+        <ul className={`${styles.navMenu} ${styles.flexSpaceBetween} ${styles.flexGrow}`}>
+          <div className={styles.flex}>
             <li>
               <Link to="/test">Home</Link>
             </li>
@@ -24,7 +25,7 @@ const HeaderNavigation = () => {
             </li>
             <li>
               <Link to="/test">Test</Link>
-              <ul className="dropdownMenu">
+              <ul className={styles.dropdownMenu}>
                 <li>
                   <Link to="/test">Menu Item</Link>
                 </li>
@@ -40,7 +41,7 @@ const HeaderNavigation = () => {
               </ul>
             </li>
           </div>
-          <div className="flex">
+          <div className={styles.flex}>
             <li>
               <Link to="/test">Login</Link>
             </li>

@@ -1,6 +1,7 @@
 import ModalTemplate from "@/components/Modal/Modal";
-import { ReactElement, createContext, useRef, useState } from "react";
-import { CreateModalType, ModalDetails } from "../types/modal.types";
+import type { ReactElement } from "react";
+import { createContext, useRef, useState } from "react";
+import type { CreateModalType, ModalDetails } from "../types/modal.types";
 
 // todo: test what happens if you use a component in a parent component without exporting, what error does vite give?
 //        --- read https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports ?

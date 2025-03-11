@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import classes from "./FooterNavigation.module.css";
+import layoutClasses from "@/styles/layout.module.css";
+import clsx from "clsx";
 
 const FooterNavigation = () => {
   return (
     <footer className={classes.footer}>
-      <nav className="flex flexGrow">
-        <ul className="navMenu">
+      <nav className={clsx(layoutClasses.flex, layoutClasses.flexGrow)}>
+        <ul className={layoutClasses.navMenu}>
           <li>
             <Link to="/test">Home</Link>
           </li>
@@ -20,7 +22,7 @@ const FooterNavigation = () => {
           </li>
           <li>
             <Link to="/test">Test</Link>
-            <ul className={`dropdownMenu ${classes.dropdownMenuFooter}`}>
+            <ul className={`${layoutClasses.dropdownMenu} ${classes.dropdownMenuFooter}`}>
               <li>
                 <Link to="/test">Menu Item</Link>
               </li>

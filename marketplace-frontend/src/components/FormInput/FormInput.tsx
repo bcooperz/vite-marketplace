@@ -1,4 +1,5 @@
-import { forwardRef, InputHTMLAttributes } from "react";
+import type { InputHTMLAttributes } from "react";
+import { forwardRef } from "react";
 import classes from "./FormInput.module.css";
 import clsx from "clsx";
 

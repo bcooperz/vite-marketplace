@@ -32,6 +32,36 @@ a:hover {
   text-decoration: underline;
 }
 
+select {
+  appearance: none;
+  background-image: url("@/assets/icons/chevron-down.svg");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem top 50%;
+  background-size: 0.65rem auto;
+  padding: 0 0.3rem;
+  padding-right: 2rem;
+}
+
+option {
+  color: black;
+}
+
+option:disabled {
+  color: rgba(192, 192, 192, 1);
+}
+
+select {
+  height: 2.5rem;
+  font-size: 1.2rem;
+  border: 1px solid #c0c0c0;
+  border-radius: 4px;
+  flex-grow: 1;
+}
+
+select:has(option:checked[data-is-placeholder="true"]) {
+  color: lightgray;
+}
+
 h1,
 h2,
 h3,

@@ -1,4 +1,5 @@
-import { ReactElement, Ref, useImperativeHandle, useRef } from "react";
+import type { ReactElement, Ref } from "react";
+import { useImperativeHandle, useRef } from "react";
 import { createPortal } from "react-dom";
 
 const DialogModal = ({

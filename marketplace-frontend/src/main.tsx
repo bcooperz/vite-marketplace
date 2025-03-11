@@ -1,6 +1,5 @@
-import ReactDOM from "react-dom/client";
+import { createRoot } from "react-dom/client";
 import App from "./pages/App/index.tsx";
-import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
 import BrowserRouterErrorBoundary from "./components/BrowserRouterErrorBoundary.tsx";
@@ -28,7 +27,7 @@ const router = createBrowserRouter([
   },
 ]);
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ErrorBoundary>
       <ModalProvider>

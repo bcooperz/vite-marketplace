@@ -1,4 +1,4 @@
-import { FunctionComponent } from "react";
+`import type { FunctionComponent } from "react";
 
 export type ModalResult<T> = T | null;
 // todo: possible to create type like below where it's inferred

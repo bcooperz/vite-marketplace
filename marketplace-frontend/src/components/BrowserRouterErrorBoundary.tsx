@@ -1,7 +1,7 @@
 import { useRouteError } from "react-router-dom";
-import HeaderNavigation from "./pageWrappers/HeaderNavigation";
-import PageContent from "./pageWrappers/PageContent";
-import FooterNavigation from "./pageWrappers/FooterNavigation";
+import HeaderNavigation from "./pageSections/HeaderNavigation";
+import PageContent from "./pageSections/PageContent";
+import FooterNavigation from "./pageSections/FooterNavigation";
 
 const BrowserRouterErrorBoundary = () => {
   const error = useRouteError() as { statusText: string; message: string };

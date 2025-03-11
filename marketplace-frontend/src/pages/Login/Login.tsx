@@ -1,4 +1,5 @@
-import { useForm, SubmitHandler } from "react-hook-form";
+import type { SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import FormInput from "@/components/FormInput";
 
 interface ViewModel {

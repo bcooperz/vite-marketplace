@@ -1,4 +1,5 @@
-import axios, { AxiosRequestConfig, Method } from "axios";
+import type { AxiosRequestConfig, Method } from "axios";
+import axios from "axios";
 
 export const abortSymbol = Symbol("abortController");
 
