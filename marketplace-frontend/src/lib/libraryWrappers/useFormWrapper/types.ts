@@ -1,10 +1,11 @@
-import type { FieldError, FieldValues, UseFormRegister } from "react-hook-form";
+import type { FieldValues, UseFormRegister } from "react-hook-form";
 
 export type UseFormRegisterReturnValues<T extends FieldValues> = ReturnType<UseFormRegister<T>> & {
-  errorMessage?: FieldError["message"];
+  errorMessage?: string;
+  title?: string;
 };
 
 export type UseFormRegisterParams<T extends FieldValues> = [
   ...Parameters<UseFormRegister<T>>,
-  placeholder?: string,
+  title?: string,
 ];

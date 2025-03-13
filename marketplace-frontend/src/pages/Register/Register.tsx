@@ -25,6 +25,18 @@ import OptionPlaceholder from "@/components/SelectInput/OptionPlaceholder";
   - Consider performance impact of CSS - can cache? lazy load?
 */
 
+/*
+  todo:
+    Error handling todo
+     ==- Make required red border
+     ==- Add error messages
+     ==- Ensure accessibility
+     ==- Ensure user can scroll
+     ==- Ensure user can tab 
+     - Display for server errors
+
+  */
+
 interface ViewModel {
   username: string;
   password: string;
@@ -50,6 +62,7 @@ const Register = ({ onSuccessHandler }: { onSuccessHandler?: () => void }) => {
   const {
     register,
     registerInput,
+    registerSelect,
     handleSubmit,
     formState: { isSubmitting, errors },
     control,
@@ -73,18 +86,6 @@ const Register = ({ onSuccessHandler }: { onSuccessHandler?: () => void }) => {
   const selectedMonth = useWatch({ control, name: "dob.month" });
   const dayOptions = createDayOptionElements(Number(selectedMonth) || 1);
   const yearOptions = createYearOptionElements();
-
-  /*
-  todo:
-    Error handling todo
-     ==- Make required red border
-     ==- Add error messages
-     ==- Ensure accessibility
-     ==- Ensure user can scroll
-     ==- Ensure user can tab 
-     - Display for server errors
-
-  */
 
   return (
     <div>
@@ -126,52 +127,45 @@ const Register = ({ onSuccessHandler }: { onSuccessHandler?: () => void }) => {
           <div className={classes.columnSpan2}>
             <div>Date of Birth</div>
             <div className={classes.dobSelectsContainer}>
+              {/* todo: why does first month show as selected, should not hide first option? */}
               <SelectInput
                 id="months"
-                title="months"
-                className={`${classes.dobSelect} ${classes.dobSelectMonth} ${classes.selectStyles}`}
-                defaultValue=""
-                options={
-                  <>
-                    <OptionPlaceholder>Month</OptionPlaceholder>
-                    <option value="1">January</option>
-                    <option value="2">February</option>
-                    <option value="3">March</option>
-                    <option value="4">April</option>
-                    <option value="5">May</option>
-                    <option value="6">June</option>
-                    <option value="7">July</option>
-                    <option value="8">August</option>
-                    <option value="9">September</option>
-                    <option value="10">October</option>
-                    <option value="11">November</option>
-                    <option value="12">December</option>
-                  </>
-                }
-                {...register("dob.month", { required: true })}
-              />
+                placeholder="Month"
+                className={`${classes.dobSelectMonth}`}
+                {...registerSelect("dob.month", { required: true }, "Month")}
+              >
+                <>
+                  <option value="1">January</option>
+                  <option value="2">February</option>
+                  <option value="3">March</option>
+                  <option value="4">April</option>
+                  <option value="5">May</option>
+                  <option value="6">June</option>
+                  <option value="7">July</option>
+                  <option value="8">August</option>
+                  <option value="9">September</option>
+                  <option value="10">October</option>
+                  <option value="11">November</option>
+                  <option value="12">December</option>
+                </>
+              </SelectInput>
               <SelectInput
                 id="day"
-                title="days"
-                className={`${classes.dobSelect} ${classes.dobSelectDay} ${classes.selectStyles}`}
-                defaultValue=""
-                options={
-                  <>
-                    <OptionPlaceholder>Day</OptionPlaceholder>
-                    {dayOptions}
-                  </>
-                }
-                {...register("dob.day", { required: true })}
-              />
-              <select
+                className={`${classes.dobSelectDay}`}
+                placeholder="Day"
+                {...registerSelect("dob.day", { required: true }, "Day")}
+              >
+                {dayOptions}
+              </SelectInput>
+              <SelectInput
                 id="year"
-                className={`${classes.dobSelect} ${classes.dobSelectYear} ${classes.selectStyles}`}
-                defaultValue=""
-                {...register("dob.year", { required: true })}
+                placeholder="Year"
+                className={`${classes.dobSelectYear}`}
+                {...registerSelect("dob.year", { required: true }, "Year")}
               >
                 <OptionPlaceholder>Year</OptionPlaceholder>
                 {yearOptions}
-              </select>
+              </SelectInput>
             </div>
           </div>
         </div>

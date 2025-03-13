@@ -6,6 +6,10 @@ import {
 } from "react-hook-form";
 import type { UseFormRegisterParams, UseFormRegisterReturnValues } from "./types";
 
+/*
+  TODO: MOVE TO UTILs otherwise this hook would likely introduce unused logic every time it's called
+*/
+
 const useFormWrapper = <T extends FieldValues>(formParams: UseFormProps<T>) => {
   const { control, handleSubmit, formState, register } = useForm<T>({ ...formParams });
 
@@ -17,26 +21,27 @@ const useFormWrapper = <T extends FieldValues>(formParams: UseFormProps<T>) => {
         ...rules,
         required: { value: required, message: `Field is required` },
       }),
-      required,
       errorMessage: formState.errors[name]?.message,
     };
   };
 
   const registerSelect = (
-    ...[name, rules, placeholder]: UseFormRegisterParams<T>
+    ...[name, rules, title]: UseFormRegisterParams<T>
   ): UseFormRegisterReturnValues<T> => {
     const required = !!rules?.required;
 
     return {
-      ...register(name, { ...rules, required: { value: required, message: `Field is required` } }),
-      // todo: remove this as it will cause browser validation to interfere with react hook form?
-      required,
-      // todo: why is this causing error without casting?
-      errorMessage: formState.errors[name]?.message as string,
+      ...register(name, {
+        ...rules,
+        required: { value: required, message: `${title} is required` },
+      }),
+      // todo: better way to do this?
+      errorMessage: formState.errors[name]?.message?.toString(),
+      title,
     };
   };
 
-  return { control, handleSubmit, formState, register, registerInput };
+  return { control, handleSubmit, formState, register, registerInput, registerSelect };
 };
 
 export default useFormWrapper;

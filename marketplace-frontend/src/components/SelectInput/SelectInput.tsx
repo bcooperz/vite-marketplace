@@ -1,16 +1,20 @@
-import type { DetailedHTMLProps, FC, ReactNode, Ref } from "react";
+import type { DetailedHTMLProps, Ref } from "react";
+import OptionPlaceholder from "./OptionPlaceholder";
 
 interface Props
   extends DetailedHTMLProps<React.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement> {
-  options: ReactNode;
-  PlaceholderOption?: FC;
+  placeholder?: string;
   ref: Ref<HTMLSelectElement>;
 }
 
-const SelectInput = ({ options, PlaceholderOption, ref, ...rest }: Props) => {
+{
+  /* todo: add error message logic and styling -- see FormInput*/
+}
+const SelectInput = ({ children, placeholder, ref, ...rest }: Props) => {
   return (
     <select ref={ref} {...rest}>
-      {options}
+      {placeholder && <OptionPlaceholder>{placeholder}</OptionPlaceholder>}
+      {children}
     </select>
   );
 };
