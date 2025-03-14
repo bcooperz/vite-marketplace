@@ -6,6 +6,7 @@ import useFormWrapper from "@/lib/libraryWrappers/useFormWrapper/useFormWrapper"
 import { createDayOptionElements, createYearOptionElements } from "./util";
 import SelectInput from "@/components/SelectInput/SelectInput";
 import OptionPlaceholder from "@/components/SelectInput/OptionPlaceholder";
+import RequiredAsterisk from "@/components/RequiredAsterisk";
 
 /*
  TODOs
@@ -33,6 +34,7 @@ import OptionPlaceholder from "@/components/SelectInput/OptionPlaceholder";
      ==- Ensure accessibility
      ==- Ensure user can scroll
      ==- Ensure user can tab 
+     - Create DOB component
      - Display for server errors
 
   */
@@ -88,12 +90,12 @@ const Register = ({ onSuccessHandler }: { onSuccessHandler?: () => void }) => {
   const yearOptions = createYearOptionElements();
 
   return (
-    <div>
+    <div className={classes.registerContainer}>
       <h2>Register</h2>
       {isSubmitting && "Loading..."}
       <form className={classes.formContainer} onSubmit={handleSubmit(submitHandler)}>
         {/* todo: move styles to module */}
-        <div className={`${classes.registerContainer}`}>
+        <div className={`${classes.registerFormContainer}`}>
           <FormInput
             id="firstname"
             placeholder="First Name"
@@ -125,9 +127,9 @@ const Register = ({ onSuccessHandler }: { onSuccessHandler?: () => void }) => {
             className={classes.columnSpan2}
           />
           <div className={classes.columnSpan2}>
-            <div>Date of Birth</div>
+            <label htmlFor="months">Date of Birth</label>
+            <RequiredAsterisk />
             <div className={classes.dobSelectsContainer}>
-              {/* todo: why does first month show as selected, should not hide first option? */}
               <SelectInput
                 id="months"
                 placeholder="Month"
@@ -167,6 +169,7 @@ const Register = ({ onSuccessHandler }: { onSuccessHandler?: () => void }) => {
                 {yearOptions}
               </SelectInput>
             </div>
+            {/* todo: add DOB is required */}
           </div>
         </div>
         <button

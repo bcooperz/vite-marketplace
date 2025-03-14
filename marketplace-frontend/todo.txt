@@ -1,3 +1,6 @@
+CSS
+ - Create global style variables
+
 Vite
  Build project layout
  Routing: 

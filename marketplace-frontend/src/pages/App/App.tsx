@@ -1,4 +1,3 @@
-import "@/styles/index.css";
 import FooterNavigation from "@/components/pageSections/FooterNavigation";
 import HeaderNavigation from "@/components/pageSections/HeaderNavigation";
 import PageContent from "@/components/pageSections/PageContent";

@@ -1,0 +1,22 @@
+:root {
+  /* Colors */
+  --color-primary: #007bff;
+  --color-text: #333;
+
+  /* Typography */
+  --font-family-base: Inter, system-ui, sans-serif;
+  --font-size-base: 16px;
+
+  /* Spacing */
+  --spacing-unit: 0.25rem;
+
+  /* Layout */
+  --header-height: 4rem;
+  --footer-height: 4rem;
+  --max-width: 1200px;
+
+  /* Z-index layers */
+  --z-modal: 1000;
+  --z-dropdown: 100;
+  --z-header: 50;
+}

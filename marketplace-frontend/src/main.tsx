@@ -7,6 +7,9 @@ import PageEffectsWrapper from "./components/PageEffectsWrapper.tsx";
 import routes from "./routes.tsx";
 import { ModalProvider } from "./context/ModalContext.tsx";
 import { StrictMode } from "react";
+import "@/styles/normalise.css";
+import "@/styles/global/variables.css";
+import "@/styles/index.css";
 
 const router = createBrowserRouter([
   {

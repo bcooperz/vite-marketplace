@@ -1,7 +1,7 @@
 import type { InputHTMLAttributes } from "react";
 import { forwardRef } from "react";
 import classes from "./FormInput.module.css";
-import clsx from "clsx";
+import RequiredAsterisk from "@/components/RequiredAsterisk";
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   errorMessage?: string;
@@ -16,21 +16,17 @@ const FormInput = forwardRef<HTMLInputElement, Props>(function FormInput(
 
   // todo: if time, test with screen reader
   return (
+    // todo: better way of including className? -- what if it's undefined, test that case
     <div className={`${classes.inputContainer} ${className ?? ""}`}>
       <label className={classes.inputLabel} htmlFor={id}>
         {placeholder}
-        {required && (
-          <span className={classes.requiredAsterisk} aria-hidden>
-            {" "}
-            &#42;
-          </span>
-        )}
+        {required && <RequiredAsterisk />}
       </label>
       <input
         id={id}
         type="text"
         placeholder={placeholder}
-        className={clsx(classes.textInput, { [classes.textInputInvalid]: invalid })}
+        className={classes.textInput}
         aria-invalid={invalid}
         aria-required={required}
         aria-describedby={errorMessage ? errorMessageId : undefined}

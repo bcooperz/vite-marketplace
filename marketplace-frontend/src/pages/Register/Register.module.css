@@ -8,13 +8,17 @@
 }
 
 .registerContainer {
+  padding: 1rem;
+}
+
+.registerFormContainer {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.2rem;
 }
 
 @container formContainer (min-width: 600px) {
-  .registerContainer {
+  .registerFormContainer {
     grid-template-columns: 1fr 1fr;
     gap: 1.2rem 2rem;
   }
