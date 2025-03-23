@@ -1,5 +1,13 @@
+/* todo: is this the best place to put shared styles like this? */
 
+.inputLabel {
+  padding-bottom: 0.4rem;
+}
 
+.errorMessage {
+  color: red;
+}
 
-
-
+.columnSpan2 {
+  grid-column: 1 / -1;
+}

@@ -1,12 +1,10 @@
 import FormInput from "@/components/FormInput";
 import type { SubmitHandler } from "react-hook-form";
-import { useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import classes from "./Register.module.css";
-import useFormWrapper from "@/lib/libraryWrappers/useFormWrapper/useFormWrapper";
-import { createDayOptionElements, createYearOptionElements } from "./util";
-import SelectInput from "@/components/SelectInput/SelectInput";
-import OptionPlaceholder from "@/components/SelectInput/OptionPlaceholder";
-import RequiredAsterisk from "@/components/RequiredAsterisk";
+import sharedClasses from "@/pages/App/App.module.css";
+import { getRegisterInputFn } from "@/lib/libraryWrappers/reactHookForm/utils";
+import RHFDOBInput from "@/components/RHFDOBInput/RHFDOBInput";
 
 /*
  TODOs
@@ -61,14 +59,7 @@ const Register = ({ onSuccessHandler }: { onSuccessHandler?: () => void }) => {
     console.log(values);
   };
 
-  const {
-    register,
-    registerInput,
-    registerSelect,
-    handleSubmit,
-    formState: { isSubmitting, errors },
-    control,
-  } = useFormWrapper<ViewModel>({
+  const { register, handleSubmit, formState, control } = useForm<ViewModel>({
     mode: "onBlur",
     defaultValues: {
       username: "",
@@ -85,9 +76,10 @@ const Register = ({ onSuccessHandler }: { onSuccessHandler?: () => void }) => {
     },
   });
 
-  const selectedMonth = useWatch({ control, name: "dob.month" });
-  const dayOptions = createDayOptionElements(Number(selectedMonth) || 1);
-  const yearOptions = createYearOptionElements();
+  const { isSubmitting } = formState;
+
+  // todo: consider if this is the best way to register and get error messages / add functionality to input. should this be 2 hooks or separated somehow?
+  const registerInput = getRegisterInputFn({ formState, register });
 
   return (
     <div className={classes.registerContainer}>
@@ -110,67 +102,30 @@ const Register = ({ onSuccessHandler }: { onSuccessHandler?: () => void }) => {
             id="username"
             placeholder="Username"
             {...registerInput("username", { required: true })}
-            className={classes.columnSpan2}
+            className={sharedClasses.columnSpan2}
           />
           {/* todo: add email validation */}
           <FormInput
             id="email"
             placeholder="Email Address"
             {...registerInput("email", { required: true })}
-            className={classes.columnSpan2}
+            className={sharedClasses.columnSpan2}
           />
           <FormInput
             id="password"
             type="password"
             placeholder="Password"
             {...registerInput("password", { required: true })}
-            className={classes.columnSpan2}
+            className={sharedClasses.columnSpan2}
           />
-          <div className={classes.columnSpan2}>
-            <label htmlFor="months">Date of Birth</label>
-            <RequiredAsterisk />
-            <div className={classes.dobSelectsContainer}>
-              <SelectInput
-                id="months"
-                placeholder="Month"
-                className={`${classes.dobSelectMonth}`}
-                {...registerSelect("dob.month", { required: true }, "Month")}
-              >
-                <>
-                  <option value="1">January</option>
-                  <option value="2">February</option>
-                  <option value="3">March</option>
-                  <option value="4">April</option>
-                  <option value="5">May</option>
-                  <option value="6">June</option>
-                  <option value="7">July</option>
-                  <option value="8">August</option>
-                  <option value="9">September</option>
-                  <option value="10">October</option>
-                  <option value="11">November</option>
-                  <option value="12">December</option>
-                </>
-              </SelectInput>
-              <SelectInput
-                id="day"
-                className={`${classes.dobSelectDay}`}
-                placeholder="Day"
-                {...registerSelect("dob.day", { required: true }, "Day")}
-              >
-                {dayOptions}
-              </SelectInput>
-              <SelectInput
-                id="year"
-                placeholder="Year"
-                className={`${classes.dobSelectYear}`}
-                {...registerSelect("dob.year", { required: true }, "Year")}
-              >
-                <OptionPlaceholder>Year</OptionPlaceholder>
-                {yearOptions}
-              </SelectInput>
-            </div>
-            {/* todo: add DOB is required */}
-          </div>
+          <RHFDOBInput
+            register={register}
+            formState={formState}
+            control={control}
+            dayPath="dob.day"
+            monthPath="dob.month"
+            yearPath="dob.year"
+          />
         </div>
         <button
           onClick={() => {

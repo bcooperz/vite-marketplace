@@ -1,0 +1,16 @@
+.dobSelectsContainer {
+  display: flex;
+  gap: 1rem;
+}
+
+.dobSelectYear {
+  flex-grow: 5;
+}
+
+.dobSelectMonth {
+  flex-grow: 10;
+}
+
+.dobSelectDay {
+  flex-grow: 3;
+}

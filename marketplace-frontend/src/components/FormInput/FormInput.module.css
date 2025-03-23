@@ -13,18 +13,10 @@
   flex-direction: column;
 }
 
-.inputLabel {
-  padding-bottom: 0.4rem;
-}
-
 .textInput::placeholder {
   color: rgba(192, 192, 192, 1);
 }
 
 .textInput:focus {
   border: 1px solid green;
-}
-
-.errorMessage {
-  color: red;
 }

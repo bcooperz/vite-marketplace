@@ -4,6 +4,10 @@
   --header-height: 4rem;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 select {
   appearance: none;
   background-image: url("@/assets/icons/chevron-down.svg");
