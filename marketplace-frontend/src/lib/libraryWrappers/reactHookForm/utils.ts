@@ -2,6 +2,7 @@ import type {
   UseFormRegisterParams,
   UseFormRegisterReturnValues,
 } from "@/lib/libraryWrappers/reactHookForm/useFormWrapper/types";
+import type { FieldErrors } from "react-hook-form";
 import { get, type FieldValues, type FormState, type UseFormRegister } from "react-hook-form";
 
 // todo: should be hook?
@@ -31,10 +32,10 @@ const getRegisterInputFn = <T extends FieldValues>({
 
 const getRegisterSelectFn = <T extends FieldValues>({
   register,
-  formState,
+  errors,
 }: {
   register: UseFormRegister<T>;
-  formState: FormState<T>;
+  errors?: FieldErrors<T>;
 }) => {
   const registerSelect = (
     ...[name, rules, title]: UseFormRegisterParams<T>
@@ -47,7 +48,7 @@ const getRegisterSelectFn = <T extends FieldValues>({
         required: { value: required, message: `${title} is required` },
       }),
       // todo: better way to get message?
-      errorMessage: get(formState.errors, name)?.message?.toString(),
+      errorMessage: get(errors, name)?.message?.toString(),
       title,
       required,
     };

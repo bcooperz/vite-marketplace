@@ -9,11 +9,9 @@ import type { DetailedHTMLProps, Ref } from "react";
 interface SelectProps
   extends DetailedHTMLProps<React.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement> {
   ref: Ref<HTMLSelectElement>;
+  id: string;
 }
 
-// todo: What should this type be? - should paths be passed?
-// pass input props for each instead
-// compose this with RHF component
 const DOBInput = ({
   selectedDay,
   selectedMonth,
@@ -21,6 +19,10 @@ const DOBInput = ({
   dayProps,
   monthProps,
   yearProps,
+  errorMessageToDisplay,
+  getErrorMessageElementId,
+  // getErrorMessageForInput,
+  errorInputId,
 }: {
   selectedMonth: string;
   selectedDay: string;
@@ -28,22 +30,39 @@ const DOBInput = ({
   dayProps: SelectProps;
   monthProps: SelectProps;
   yearProps: SelectProps;
+  errorMessageToDisplay?: string;
+  errorInputId?: string;
+  getErrorMessageElementId: (inputId: string) => string | undefined;
+  // getErrorMessageForInput: (selectPath: string) => string | undefined;
 }) => {
   const dayOptions = createDayOptionElements(Number(selectedMonth) || 1);
   const yearOptions = createYearOptionElements();
 
+  // let errorId: string | undefined;
+
+  // if (errorInputId === "requiredErrorId") {
+  //   errorId = "requiredErrorId";
+  // } else if (errorId !== undefined) {
+  //   errorId = `${errorInputId}-error-id`;
+  // }
+
+  console.log("errorInputId", errorInputId);
+
+  // todo: pass id prop
+
   return (
-    <div className={sharedClasses.columnSpan2}>
+    <div className={`${sharedClasses.columnSpan2} ${classes.dobContainer}`}>
       <label htmlFor="months" className={sharedClasses.inputLabel}>
         Date of Birth
         <RequiredAsterisk />
       </label>
       <div className={classes.dobSelectsContainer}>
         <SelectInput
-          id="months"
+          // id="months"
           placeholder="Month"
           className={`${classes.dobSelectMonth}`}
           value={selectedMonth}
+          aria-errormessage={getErrorMessageElementId(monthProps.id)}
           {...monthProps}
         >
           <>
@@ -62,26 +81,33 @@ const DOBInput = ({
           </>
         </SelectInput>
         <SelectInput
-          id="day"
+          // id="day"
           className={`${classes.dobSelectDay}`}
           placeholder="Day"
           value={selectedDay}
+          // todo: better way to do this? -- do inside SelectInput?
+          aria-errormessage={getErrorMessageElementId(dayProps.id)}
           {...dayProps}
         >
           {dayOptions}
         </SelectInput>
         <SelectInput
-          id="year"
+          // id="year"
           placeholder="Year"
           className={`${classes.dobSelectYear}`}
           value={selectedYear}
+          aria-errormessage={getErrorMessageElementId(yearProps.id)}
           {...yearProps}
         >
           <OptionPlaceholder>Year</OptionPlaceholder>
           {yearOptions}
         </SelectInput>
       </div>
-      {/* todo: add DOB is required */}
+      {errorMessageToDisplay && (
+        <div id={errorInputId} aria-live="assertive" className={sharedClasses.errorMessage}>
+          {errorMessageToDisplay}
+        </div>
+      )}
     </div>
   );
 };

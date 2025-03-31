@@ -3,6 +3,11 @@
   gap: 1rem;
 }
 
+.dobContainer {
+  display: flex;
+  flex-direction: column;
+}
+
 .dobSelectYear {
   flex-grow: 5;
 }

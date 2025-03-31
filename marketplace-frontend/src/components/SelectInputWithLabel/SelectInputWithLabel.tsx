@@ -33,7 +33,7 @@ const SelectInputWithLabel = ({
         placeholder={placeholder}
         errorMessage={errorMessage}
         required={required}
-        aria-describedby={errorMessage ? errorMessageId : undefined}
+        aria-errormessage={errorMessage ? errorMessageId : undefined}
         ref={ref}
         {...rest}
       >

@@ -30,7 +30,7 @@ const FormInput = forwardRef<HTMLInputElement, Props>(function FormInput(
         className={classes.textInput}
         aria-invalid={invalid}
         aria-required={required}
-        aria-describedby={errorMessage ? errorMessageId : undefined}
+        aria-errormessage={errorMessage ? errorMessageId : undefined}
         ref={ref}
         {...rest}
       />
