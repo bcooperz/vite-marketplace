@@ -37,7 +37,7 @@ const getRegisterSelectFn = <T extends FieldValues>({
   errors?: FieldErrors<T>;
 }) => {
   const registerSelect = (
-    ...[name, rules, title]: UseFormRegisterParams<T>
+    ...[name, rules, title, errorMessagePath]: UseFormRegisterParams<T>
   ): UseFormRegisterReturnValues<T> => {
     const required = !!rules?.required;
 
@@ -47,7 +47,7 @@ const getRegisterSelectFn = <T extends FieldValues>({
         required: { value: required, message: `${title} is required` },
       }),
       // todo: better way to get message?
-      errorMessage: get(errors, name)?.message?.toString(),
+      errorMessage: get(errors, errorMessagePath ?? name)?.message?.toString(),
       title,
       required,
     };

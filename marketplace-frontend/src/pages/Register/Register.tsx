@@ -1,6 +1,6 @@
 import FormInput from "@/components/FormInput";
 import type { SubmitHandler } from "react-hook-form";
-import { useForm } from "react-hook-form";
+import { get, useForm } from "react-hook-form";
 import classes from "./Register.module.css";
 import sharedClasses from "@/pages/App/App.module.css";
 import { getRegisterInputFn } from "@/lib/libraryWrappers/reactHookForm/utils";
@@ -8,10 +8,9 @@ import RHFDOBInput from "@/components/RHFDOBInput/RHFDOBInput";
 
 /*
  TODOs
+  - make registration work and save token to DB / start a session 
   - Loading state
-  - make registration work and save token to DB / start a session
   - create login
-  ==- validate accessibility
   - validate security - XSS, CSRF
   - Add error handling
   - Add unit and e2e tests
@@ -27,11 +26,6 @@ import RHFDOBInput from "@/components/RHFDOBInput/RHFDOBInput";
 /*
   todo:
     Error handling todo
-     ==- Make required red border
-     ==- Add error messages
-     ==- Ensure accessibility
-     ==- Ensure user can scroll
-     ==- Ensure user can tab 
      - Create DOB component
      - Display for server errors
 
