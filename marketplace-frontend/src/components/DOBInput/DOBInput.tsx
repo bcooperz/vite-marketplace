@@ -21,7 +21,6 @@ const DOBInput = ({
   yearProps,
   errorMessageToDisplay,
   getErrorMessageElementId,
-  // getErrorMessageForInput,
   errorInputId,
 }: {
   selectedMonth: string;
@@ -38,18 +37,6 @@ const DOBInput = ({
   const dayOptions = createDayOptionElements(Number(selectedMonth) || 1);
   const yearOptions = createYearOptionElements();
 
-  // let errorId: string | undefined;
-
-  // if (errorInputId === "requiredErrorId") {
-  //   errorId = "requiredErrorId";
-  // } else if (errorId !== undefined) {
-  //   errorId = `${errorInputId}-error-id`;
-  // }
-
-  console.log("errorInputId", errorInputId);
-
-  // todo: pass id prop
-
   return (
     <div className={`${sharedClasses.columnSpan2} ${classes.dobContainer}`}>
       <label htmlFor="months" className={sharedClasses.inputLabel}>
@@ -58,7 +45,6 @@ const DOBInput = ({
       </label>
       <div className={classes.dobSelectsContainer}>
         <SelectInput
-          // id="months"
           placeholder="Month"
           className={`${classes.dobSelectMonth}`}
           value={selectedMonth}
@@ -81,7 +67,6 @@ const DOBInput = ({
           </>
         </SelectInput>
         <SelectInput
-          // id="day"
           className={`${classes.dobSelectDay}`}
           placeholder="Day"
           value={selectedDay}
@@ -92,7 +77,6 @@ const DOBInput = ({
           {dayOptions}
         </SelectInput>
         <SelectInput
-          // id="year"
           placeholder="Year"
           className={`${classes.dobSelectYear}`}
           value={selectedYear}

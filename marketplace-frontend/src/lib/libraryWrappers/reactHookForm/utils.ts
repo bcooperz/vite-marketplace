@@ -5,7 +5,6 @@ import type {
 import type { FieldErrors } from "react-hook-form";
 import { get, type FieldValues, type FormState, type UseFormRegister } from "react-hook-form";
 
-// todo: should be hook?
 const getRegisterInputFn = <T extends FieldValues>({
   register,
   formState,

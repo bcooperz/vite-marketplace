@@ -120,11 +120,12 @@ const Register = ({ onSuccessHandler }: { onSuccessHandler?: () => void }) => {
           />
           <RHFDOBInput
             register={register}
-            errors={formState.errors}
+            errors={formState.errors.dob}
             control={control}
-            dayPath="dob.day"
-            monthPath="dob.month"
-            yearPath="dob.year"
+            dobPath="dob"
+            dayPath="day"
+            monthPath="month"
+            yearPath="year"
           />
         </div>
         <button

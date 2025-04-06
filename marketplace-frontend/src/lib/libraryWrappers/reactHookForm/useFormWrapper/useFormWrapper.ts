@@ -7,10 +7,6 @@ import {
 } from "react-hook-form";
 import type { UseFormRegisterParams, UseFormRegisterReturnValues } from "./types";
 
-/*
-  TODO: MOVE TO UTILs otherwise this hook would likely introduce unused logic every time it's called
-*/
-
 const useFormWrapper = <T extends FieldValues>(formParams: UseFormProps<T>) => {
   const { control, handleSubmit, formState, register } = useForm<T>({ ...formParams });
 

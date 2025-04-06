@@ -1,45 +1,61 @@
 import DOBInput from "@/components/DOBInput/DOBInput";
 import { requiredErrorId } from "@/lib/libraryWrappers/reactHookForm/constants";
 import { getRegisterSelectFn } from "@/lib/libraryWrappers/reactHookForm/utils";
-import type { Control, FieldError, FieldErrors } from "react-hook-form";
+import type { Control, FieldError, FieldErrors, FieldPath } from "react-hook-form";
 import { get, useWatch, type FieldValues, type Path, type UseFormRegister } from "react-hook-form";
 
 const dayId = "day";
 const monthId = "month";
 const yearId = "year";
 
-interface Props<T extends FieldValues> {
-  // todo: how could I create a type which enforces a path from a certain point e.g. dob.X
-  register: UseFormRegister<T>;
-  dayPath: Path<T>;
-  monthPath: Path<T>;
-  yearPath: Path<T>;
-  control: Control<T>;
-  errors?: FieldErrors<T>;
+// todo: How can I not have to duplicate the interface generic types?
+
+interface Props<
+  FValues extends FieldValues,
+  DOBPath extends FieldPath<FValues>,
+  SubPath extends FieldPath<FValues[DOBPath]>,
+> {
+  register: UseFormRegister<FValues>;
+  dobPath: DOBPath;
+  dayPath: SubPath;
+  monthPath: SubPath;
+  yearPath: SubPath;
+  control: Control<FValues>;
+  errors?: FieldErrors<FValues[DOBPath]>;
 }
 
-const RHFDOBInput = <T extends FieldValues>({
+const RHFDOBInput = <
+  FValues extends FieldValues,
+  DOBPath extends FieldPath<FValues>,
+  SubPath extends FieldPath<FValues[DOBPath]>,
+>({
   errors,
   register,
   control,
+  dobPath,
   dayPath,
   monthPath,
   yearPath,
-}: Props<T>) => {
+}: Props<FValues, DOBPath, SubPath>) => {
+  const getInputPath = (subPath: SubPath) => {
+    return `${dobPath}.${subPath}` as Path<FValues>;
+  };
+  const fullDayPath = getInputPath(dayPath);
+  const fullMonthPath = getInputPath(monthPath);
+  const fullYearPath = getInputPath(yearPath);
+
   const registerSelect = getRegisterSelectFn({ errors, register });
-  const selectedDay = useWatch({ control, name: dayPath });
-  const selectedMonth = useWatch({ control, name: monthPath });
-  const selectedYear = useWatch({ control, name: yearPath });
+  const selectedDay = useWatch({ control, name: fullDayPath });
+  const selectedMonth = useWatch({ control, name: fullMonthPath });
+  const selectedYear = useWatch({ control, name: fullYearPath });
 
   const [firstError] = Object.entries(errors ?? {});
   const [firstErrorPath, firstErrorDetails] = firstError ?? [];
 
-  const hasInputWithRequiredError = Object.values(errors ?? {}).some(
+  const inputWithRequiredError = Object.values(errors ?? {}).find(
     (error) => error?.type === "required",
   );
 
-  // todo: all inputs with required error should link to errormessage element otherwise
-  //       only if the input is the first error
   const getErrorMessageElementId = (inputId: string) => {
     let inputPath;
     switch (inputId) {
@@ -54,40 +70,52 @@ const RHFDOBInput = <T extends FieldValues>({
         break;
     }
 
+    if (!inputPath) return undefined;
+
     const error = get(errors, inputPath) as FieldError | undefined;
+    if (!error) return undefined;
 
-    if (error) {
-      if (error.type === "required") {
-        return requiredErrorId;
-      }
+    if (error.type === "required") {
+      return requiredErrorId;
+    }
 
-      // todo: better way to do this? don't want to continue if any other input has required error as that takes priority
-      if (hasInputWithRequiredError) {
-        return undefined;
-      }
+    // Other input has required error so we don't want this one to point to any error element
+    if (inputWithRequiredError) {
+      return undefined;
+    }
 
-      console.log("firstErrorPath", firstErrorPath);
-      console.log("inputPath", inputPath);
-
-      if (firstErrorPath === inputPath) {
-        return `${inputPath}-error-id`;
-      }
+    if (firstErrorPath === getInputPath(inputPath)) {
+      return `${inputPath}-error-id`;
     }
 
     return undefined;
   };
 
+  const errorMessage =
+    typeof inputWithRequiredError?.message === "string"
+      ? inputWithRequiredError.message
+      : typeof firstErrorDetails?.message === "string"
+        ? firstErrorDetails?.message
+        : undefined;
+
   return (
     <DOBInput
-      dayProps={{ ...registerSelect(dayPath, { required: true }, "Day"), id: dayId }}
-      monthProps={{ ...registerSelect(monthPath, { required: true }, "Month"), id: monthId }}
-      yearProps={{ ...registerSelect(yearPath, { required: true }, "Year"), id: yearId }}
+      dayProps={{
+        ...registerSelect(fullDayPath, { required: true }, "Day"),
+        id: dayId,
+      }}
+      monthProps={{
+        ...registerSelect(fullMonthPath, { required: true }, "Month"),
+        id: monthId,
+      }}
+      yearProps={{ ...registerSelect(fullYearPath, { required: true }, "Year"), id: yearId }}
       selectedDay={selectedDay}
       selectedMonth={selectedMonth}
       selectedYear={selectedYear}
-      errorInputId={hasInputWithRequiredError ? requiredErrorId : firstErrorPath}
+      errorInputId={inputWithRequiredError ? requiredErrorId : firstErrorPath}
       errorMessageToDisplay={
-        typeof firstErrorDetails?.message === "string" ? firstErrorDetails?.message : undefined
+        errorMessage
+        // typeof firstErrorDetails?.message === "string" ? firstErrorDetails?.message : undefined
       }
       getErrorMessageElementId={getErrorMessageElementId}
     />
