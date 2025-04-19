@@ -3,16 +3,22 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "migrate:make": "knex migrate:make",
+    "migrate:latest": "knex migrate:latest",
+    "migrate:rollback": "knex migrate:rollback",
+    "seed:run": "knex seed:run"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "dotenv": "^16.5.0",
     "knex": "^3.1.0",
     "pg": "^8.14.1"
   },
   "devDependencies": {
-    "@types/knex": "^0.15.2"
+    "@types/knex": "^0.15.2",
+    "@types/pg": "^8.11.13",
+    "typescript": "^5.8.3"
   }
 }

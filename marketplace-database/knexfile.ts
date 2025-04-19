@@ -1,36 +1,39 @@
-// src/database/knexfile.ts
-import dotenv from "dotenv";
-import { Knex } from "knex";
+import type { Knex } from "knex";
+import { verifyEnv } from "./src/config/env.ts";
 
-dotenv.config();
+verifyEnv();
 
 const config: { [key: string]: Knex.Config } = {
   development: {
     client: "pg",
     connection: {
-      host: process.env.DB_HOST || "localhost",
-      port: parseInt(process.env.DB_PORT || "5432"),
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
+      host: process.env.POSTGRES_HOST,
+      port: parseInt(process.env.POSTGRES_PORT!),
+      user: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      database: process.env.POSTGRES_DB,
     },
     migrations: {
-      directory: "./migrations",
+      directory: process.env.MIGRATION_DIR!,
       extension: "ts",
+      loadExtensions: [".ts"],
     },
     seeds: {
-      directory: "./seeds",
+      directory: process.env.SEED_DIR!,
       extension: "ts",
+      loadExtensions: [".ts"],
     },
   },
   production: {
     client: "pg",
-    connection: process.env.DATABASE_URL,
+    connection: process.env.DATABASE_URL!,
     migrations: {
-      directory: "./migrations",
+      directory: process.env.MIGRATION_DIR!,
+      extension: "ts",
     },
     seeds: {
-      directory: "./seeds",
+      directory: process.env.SEED_DIR!,
+      extension: "ts",
     },
     pool: {
       min: 2,

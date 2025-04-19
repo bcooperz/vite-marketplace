@@ -1,3 +1,5 @@
+// todo: is it bad to import the same module multiple times?
+import "./config/env.js";
 import express, { NextFunction, Request, Response } from "express";
 import bodyParser from "body-parser";
 import db from "./queries.js";
