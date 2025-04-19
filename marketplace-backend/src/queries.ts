@@ -1,4 +1,3 @@
-import pg from "pg";
 import { NextFunction, Request, Response } from "express";
 import {
   createUserParamsSchema,
@@ -10,19 +9,11 @@ import { InputType } from "./types/api/queries.types.js";
 import { HttpStatusCode } from "./errors/enums/HttpStatusCode.js";
 import AppError from "./errors/classes/AppError.js";
 import NotFoundError from "./errors/classes/NotFoundError.js";
+import { pool } from "./config/database.js";
 
 // todo: how can I connect types to what backend returns
 
 // todo: how can controller files be split up - should this be at parent level and passed?
-const Pool = pg.Pool;
-const pool = new Pool({
-  user: "me",
-  host: "localhost",
-  database: "api",
-  password: "password",
-  port: 5432,
-  query_timeout: 5000,
-});
 
 pool.on("error", (error) => {
   console.error("Unexpected database error:", error);

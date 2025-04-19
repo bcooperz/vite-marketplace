@@ -6,6 +6,8 @@ import ErrorHandler from "./errors/ErrorHandler.js";
 import ErrorManager from "./errors/ErrorManager.js";
 import { ApiError } from "./types/api/error.types.js";
 import { HttpStatusCode } from "./errors/enums/HttpStatusCode.js";
+import { configureSecurityMiddleware } from "./middleware/rateLimiter.js";
+import cors from "cors";
 
 const app = express();
 const port = 3000;
@@ -38,6 +40,16 @@ process.on("unhandledRejection", (reason, promise) => {
   throw reason;
 });
 
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL!,
+    // todo: what does credentials do?
+    // credentials: true,
+  })
+);
+
+// todo: check how I can connect this to auth routes only
+// app.use(configureSecurityMiddleware);
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({

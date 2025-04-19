@@ -69,6 +69,10 @@ class ErrorHandler {
         .json(
           this.formatValidationError(error.errors.map(this.formatZodError))
         );
+    } else if (error instanceof SyntaxError && "body" in error) {
+      responseStream
+        .status(HttpStatusCode.BAD_REQUEST)
+        .json(this.formatError("Invalid JSON"));
     } else {
       responseStream
         .status(500)

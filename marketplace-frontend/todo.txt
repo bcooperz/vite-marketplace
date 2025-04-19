@@ -1,5 +1,6 @@
 CSS
  - Create global style variables
+ - add vitest - https://vitest.dev/guide/why.html 
 
 Vite
  Build project layout
