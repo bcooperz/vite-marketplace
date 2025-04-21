@@ -1,9 +1,6 @@
 import pg from "pg";
-import { verifyEnv } from "./env.js";
 
 const { Pool } = pg;
-
-verifyEnv();
 
 export const pool = new Pool({
   user: process.env.POSTGRES_USER,

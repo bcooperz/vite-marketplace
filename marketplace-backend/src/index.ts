@@ -1,8 +1,8 @@
 // todo: is it bad to import the same module multiple times?
-import "./config/env.js";
+import { verifyEnv } from "./config/env.js";
 import express, { NextFunction, Request, Response } from "express";
 import bodyParser from "body-parser";
-import db from "./queries.js";
+import db from "./controllers/queries.js";
 import Logger from "./errors/classes/Logger.js";
 import ErrorHandler from "./errors/ErrorHandler.js";
 import ErrorManager from "./errors/ErrorManager.js";
@@ -10,6 +10,11 @@ import { ApiError } from "./types/api/error.types.js";
 import { HttpStatusCode } from "./errors/enums/HttpStatusCode.js";
 import { configureSecurityMiddleware } from "./middleware/rateLimiter.js";
 import cors from "cors";
+import sessionConfig from "./config/session.js";
+import session from "express-session";
+import authRoutes from "./controllers/auth.js";
+
+verifyEnv();
 
 const app = express();
 const port = 3000;
@@ -45,10 +50,12 @@ process.on("unhandledRejection", (reason, promise) => {
 app.use(
   cors({
     origin: process.env.FRONTEND_URL!,
-    // todo: what does credentials do?
-    // credentials: true,
+    // todo: might need to add for cross domain cookies
+    credentials: true,
   })
 );
+
+app.use(session(sessionConfig));
 
 // todo: check how I can connect this to auth routes only
 // app.use(configureSecurityMiddleware);
@@ -62,6 +69,9 @@ app.use(
 app.get("/", (request, response) => {
   response.json({ info: "Node.js, express" });
 });
+
+// Auth routes
+app.use("/auth", authRoutes);
 
 // todo: separate into another file
 app.get("/users", db.getUsers);

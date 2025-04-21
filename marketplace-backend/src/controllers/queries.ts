@@ -4,12 +4,12 @@ import {
   getUserByIdParamsSchema,
   updateUserBodySchema,
   updateUserParamsSchema,
-} from "./schemas/index.js";
-import { InputType } from "./types/api/queries.types.js";
-import { HttpStatusCode } from "./errors/enums/HttpStatusCode.js";
-import AppError from "./errors/classes/AppError.js";
-import NotFoundError from "./errors/classes/NotFoundError.js";
-import { pool } from "./config/database.js";
+} from "../schemas/index.js";
+import { InputType } from "../types/api/queries.types.js";
+import { HttpStatusCode } from "../errors/enums/HttpStatusCode.js";
+import AppError from "../errors/classes/AppError.js";
+import NotFoundError from "../errors/classes/NotFoundError.js";
+import { pool } from "../config/database.js";
 
 // todo: how can I connect types to what backend returns
 
@@ -54,14 +54,12 @@ export const createUser = async (
   request: Request<unknown, InputType<typeof createUserParamsSchema>>,
   response: Response
 ) => {
-  const { name, email } = createUserParamsSchema.parse(request.body);
-
-  const results = await pool.query(
-    "INSERT INTO users (name, email) VALUES ($1, $2)",
-    [name, email]
-  );
-
-  response.status(HttpStatusCode.OK).json(results.rows);
+  // const { username, email } = createUserParamsSchema.parse(request.body);
+  // const results = await pool.query(
+  //   "INSERT INTO users (name, email) VALUES ($1, $2)",
+  //   [name, email]
+  // );
+  // response.status(HttpStatusCode.OK).json(results.rows);
 };
 
 export const updateUser = async (

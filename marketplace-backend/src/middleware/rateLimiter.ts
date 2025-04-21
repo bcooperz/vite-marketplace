@@ -14,5 +14,5 @@ export const configureSecurityMiddleware = (app: Express) => {
   app.use(helmet());
 
   // Apply rate limiting to auth routes
-  app.use("/api/auth", limiter);
+  app.use("/api/auth/*", limiter);
 };

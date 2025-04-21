@@ -1,9 +1,9 @@
  - Implement authentication
- - Implement centralized config
+ ==- Implement centralized config
+ - Implement security practices, e.g. headers / cookie best practices / CORS
+ - Implement api documentation?
  - Abstract service layer that will interact with DB see DDD
  - Implement graceful shutdown
  - Implement rate limiting / timeout
  - Implement error monitoring (sentry?)
- - Implement security practices, e.g. headers / cookie best practices / CORS
- - Implement api documentation?
  - Implement health check

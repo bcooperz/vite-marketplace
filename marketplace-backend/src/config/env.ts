@@ -22,6 +22,7 @@ export const verifyEnv = () => {
     "SESSION_DURATION",
     "COOKIE_SECURE",
     "COOKIE_SAME_SITE",
+    "COOKIE_DOMAIN",
     "RATE_LIMIT_WINDOW",
     "RATE_LIMIT_MAX",
     "FRONTEND_URL",

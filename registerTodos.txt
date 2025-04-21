@@ -2,64 +2,10 @@
 
  - Backend 
   = database versioning - continue setting up knex
-     - or can just use .sql files and git?
-  = new table
   = type definitions underneath database project? -- what are different ways these types can be checked against apis called in frontend?
   = how to setup authentication checks for certain api endpoints?
 
--- Sessions table
-CREATE TABLE "session" (
-  "sid" varchar NOT NULL COLLATE "default",
-  "sess" json NOT NULL,
-  "expire" timestamp(6) NOT NULL,
-  CONSTRAINT "session_pkey" PRIMARY KEY ("sid")
-);
-WITH (OIDS=FALSE);
-
--- Index for faster lookups
-CREATE INDEX "IDX_session_expire" ON "session" ("expire");
-
--- Users table with proper constraints and indexes
-CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    email VARCHAR(255) NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    full_name VARCHAR(255),
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    last_login TIMESTAMPTZ,
-    account_status VARCHAR(50) DEFAULT 'active',
-    
-    -- Constraints
-    CONSTRAINT users_email_unique UNIQUE (email),
-    CONSTRAINT email_format_check CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$')
-);
-
--- Create indexes for frequently queried columns
-CREATE INDEX idx_users_email ON users(email);
-
-CREATE TABLE sessions (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    token VARCHAR(255) UNIQUE NOT NULL,
-    ip_address INET,
-    user_agent TEXT,
-    expires_at TIMESTAMPTZ NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    last_activity TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
--- Create indexes
-CREATE INDEX idx_sessions_token ON sessions(token);
-CREATE INDEX idx_sessions_user_id ON sessions(user_id);
-CREATE INDEX idx_sessions_expires_at ON sessions(expires_at);
-
   = dockerise backend
-  = database project which creates tables
-  = dependencies: bcryptjs jsonwebtoken cors zod express-session uuid
-  =               @types/bcryptjs @types/jsonwebtoken @types/cors @types/express-session --save-dev
-  = session management with postgresql
   = security
      - HTTP only, SameSite, Secure
      - CORS

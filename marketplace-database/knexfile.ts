@@ -1,7 +1,4 @@
 import type { Knex } from "knex";
-import { verifyEnv } from "./src/config/env.ts";
-
-verifyEnv();
 
 const config: { [key: string]: Knex.Config } = {
   development: {
