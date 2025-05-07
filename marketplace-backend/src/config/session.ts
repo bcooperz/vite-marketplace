@@ -27,6 +27,11 @@ const sessionConfig = {
     pool,
     tableName: "session",
     createTableIfMissing: true,
+    errorLog(...args) {
+      // todo: handle this properly -- will this make it to my error handler?
+      console.error("Session store error:", ...args);
+      throw new Error("Session store error");
+    },
   }),
   secret: process.env.SESSION_SECRET!,
   resave: false,
@@ -34,10 +39,11 @@ const sessionConfig = {
   cookie: {
     secure: process.env.COOKIE_SECURE === "true",
     httpOnly: true,
+    // todo: investigate what this does and if we need to change it
     sameSite: process.env.COOKIE_SAME_SITE as "strict" | "lax" | "none",
     maxAge: parseInt(process.env.SESSION_DURATION!),
-    // todo: add path: "/"?
-    // todo: add cookie expiry -- expires config
+    path: "/",
+    rolling: true,
   },
 };
 

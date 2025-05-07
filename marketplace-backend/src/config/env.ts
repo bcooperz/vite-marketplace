@@ -8,7 +8,7 @@ dotenv.config({
 });
 
 // Export a function to verify environment variables
-export const verifyEnv = () => {
+const verifyEnv = () => {
   const requiredVars = [
     "PORT",
     "NODE_ENV",
@@ -37,3 +37,7 @@ export const verifyEnv = () => {
     );
   }
 };
+
+verifyEnv();
+
+console.log("loaded env");

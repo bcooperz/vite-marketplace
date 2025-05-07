@@ -34,11 +34,9 @@ const FormInput = forwardRef<HTMLInputElement, Props>(function FormInput(
         ref={ref}
         {...rest}
       />
-      {errorMessage && (
-        <div id={errorMessageId} aria-live="assertive" className={sharedClasses.errorMessage}>
-          {errorMessage}
-        </div>
-      )}
+      <div id={errorMessageId} aria-live="assertive" className={sharedClasses.errorMessage}>
+        {errorMessage && <span>{errorMessage}</span>}
+      </div>
     </div>
   );
 });

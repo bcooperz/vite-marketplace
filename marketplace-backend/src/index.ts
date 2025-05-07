@@ -1,5 +1,5 @@
 // todo: is it bad to import the same module multiple times?
-import { verifyEnv } from "./config/env.js";
+import "./config/env.js";
 import express, { NextFunction, Request, Response } from "express";
 import bodyParser from "body-parser";
 import db from "./controllers/queries.js";
@@ -13,8 +13,6 @@ import cors from "cors";
 import sessionConfig from "./config/session.js";
 import session from "express-session";
 import authRoutes from "./controllers/auth.js";
-
-verifyEnv();
 
 const app = express();
 const port = 3000;

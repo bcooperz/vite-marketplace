@@ -5,7 +5,7 @@ dotenv.config({
   path: path.resolve(process.cwd(), ".env"),
 });
 
-export const verifyEnv = () => {
+const verifyEnv = () => {
   const requiredVars = [
     "POSTGRES_USER",
     "POSTGRES_PASSWORD",
@@ -24,3 +24,5 @@ export const verifyEnv = () => {
     );
   }
 };
+
+verifyEnv();
