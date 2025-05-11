@@ -10,34 +10,34 @@ import { ApiError, ValidationError } from "../types/api/error.types.js";
 import APIError from "./classes/APIError.js";
 import DatabaseErrorClass from "./classes/DatabaseErrorClass.js";
 
+const formatZodError = (error: ZodIssue): ValidationError => {
+  return {
+    path: error.path.join("."),
+    message: error.message,
+  };
+};
+
+const formatError = (message: string): ApiError => {
+  return {
+    status: "error",
+    message,
+  };
+};
+
+const formatValidationError = (errors: ValidationError[]): ApiError => {
+  return {
+    status: "error",
+    message: "Validation error",
+    errors,
+  };
+};
+
 // todo: is this defined correctly, do basic recap for classes
 class ErrorHandler {
   logger: Logger;
 
   constructor(logger: Logger) {
     this.logger = logger;
-  }
-
-  private formatZodError(error: ZodIssue): ValidationError {
-    return {
-      path: error.path.join("."),
-      message: error.message,
-    };
-  }
-
-  private formatError(message: string): ApiError {
-    return {
-      status: "error",
-      message,
-    };
-  }
-
-  private formatValidationError(errors: ValidationError[]): ApiError {
-    return {
-      status: "error",
-      message: "Validation error",
-      errors,
-    };
   }
 
   public async handleError(
@@ -52,31 +52,24 @@ class ErrorHandler {
     }
 
     if (error instanceof AppError) {
-      responseStream
-        .status(error.statusCode)
-        .json(this.formatError(error.message));
-      ``;
+      responseStream.status(error.statusCode).json(formatError(error.message));
     } else if (error instanceof DatabaseError) {
       // Would also log detailed error to monitoring/server - but these should all be known errors handled at the controller/api level
       const dbError = DatabaseErrorClass.fromPgError(error);
 
       responseStream
         .status(dbError.statusCode)
-        .json(this.formatError(dbError.message));
+        .json(formatError(dbError.message));
     } else if (error instanceof z.ZodError) {
       responseStream
         .status(HttpStatusCode.BAD_REQUEST)
-        .json(
-          this.formatValidationError(error.errors.map(this.formatZodError))
-        );
+        .json(formatValidationError(error.errors.map(formatZodError)));
     } else if (error instanceof SyntaxError && "body" in error) {
       responseStream
         .status(HttpStatusCode.BAD_REQUEST)
-        .json(this.formatError("Invalid JSON"));
+        .json(formatError("Invalid JSON"));
     } else {
-      responseStream
-        .status(500)
-        .json(this.formatError("Internal Server Error"));
+      responseStream.status(500).json(formatError("Internal Server Error"));
     }
   }
 }

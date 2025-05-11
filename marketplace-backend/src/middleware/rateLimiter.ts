@@ -13,6 +13,7 @@ export const configureSecurityMiddleware = (app: Express) => {
   // Apply security headers
   app.use(helmet());
 
-  // Apply rate limiting to auth routes
-  app.use("/api/auth/*", limiter);
+  // Apply rate limiting
+  // todo: consider only applying to auth and api routes
+  app.use(limiter);
 };

@@ -1,5 +1,5 @@
 import type { Knex } from "knex";
-import "./src/config/env";
+import "./src/config/env.ts";
 
 const config: { [key: string]: Knex.Config } = {
   development: {

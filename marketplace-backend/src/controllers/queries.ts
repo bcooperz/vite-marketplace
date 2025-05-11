@@ -7,18 +7,11 @@ import {
 } from "../schemas/index.js";
 import { InputType } from "../types/api/queries.types.js";
 import { HttpStatusCode } from "../errors/enums/HttpStatusCode.js";
-import AppError from "../errors/classes/AppError.js";
 import NotFoundError from "../errors/classes/NotFoundError.js";
-import { pool } from "../config/database.js";
+import { database } from "../config/database.js";
 
-// todo: how can I connect types to what backend returns
-
-// todo: how can controller files be split up - should this be at parent level and passed?
-
-pool.on("error", (error) => {
-  console.error("Unexpected database error:", error);
-  process.exit(1); // Exit the process if the database connection is lost
-});
+// todo: delete once I've used Zod elsewhere
+// todo: how can I connect types to frontend to match what backend returns
 
 export const displayHome = () => {};
 
@@ -28,7 +21,7 @@ export const getUsers = async (
   next: NextFunction
 ) => {
   // next() automatically if this fails
-  const results = await pool.query({
+  const results = await database.getPool().query({
     text: "SELECT * FROM users ORDER BY id ASC",
   });
 

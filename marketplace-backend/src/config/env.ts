@@ -1,13 +1,13 @@
-// src/config/env.ts
 import dotenv from "dotenv";
 import path from "path";
 
-// Load environment variables immediately
-dotenv.config({
-  path: path.resolve(process.cwd(), ".env"),
-});
+const loadEnv = () => {
+  // Load environment variables
+  dotenv.config({
+    path: path.resolve(process.cwd(), ".env"),
+  });
+};
 
-// Export a function to verify environment variables
 const verifyEnv = () => {
   const requiredVars = [
     "PORT",
@@ -38,6 +38,4 @@ const verifyEnv = () => {
   }
 };
 
-verifyEnv();
-
-console.log("loaded env");
+export { loadEnv, verifyEnv };

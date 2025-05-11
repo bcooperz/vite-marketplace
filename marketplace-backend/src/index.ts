@@ -1,24 +1,40 @@
-// todo: is it bad to import the same module multiple times?
-import "./config/env.js";
-import express, { NextFunction, Request, Response } from "express";
+import { loadEnv, verifyEnv } from "./config/env.js";
+import express, { NextFunction, Request, Response, Router } from "express";
 import bodyParser from "body-parser";
-import db from "./controllers/queries.js";
 import Logger from "./errors/classes/Logger.js";
 import ErrorHandler from "./errors/ErrorHandler.js";
 import ErrorManager from "./errors/ErrorManager.js";
-import { ApiError } from "./types/api/error.types.js";
 import { HttpStatusCode } from "./errors/enums/HttpStatusCode.js";
 import { configureSecurityMiddleware } from "./middleware/rateLimiter.js";
 import cors from "cors";
-import sessionConfig from "./config/session.js";
+import { createSessionConfig } from "./config/session.js";
 import session from "express-session";
 import authRoutes from "./controllers/auth.js";
+import requireAuth from "./middleware/requireAuth.js";
+import usersRoutes from "./controllers/users.js";
+import { database } from "./config/database.js";
 
 const app = express();
 const port = 3000;
 const logger = new Logger();
 const errorHandler = new ErrorHandler(logger);
 const errorManager = new ErrorManager(logger);
+
+loadEnv();
+verifyEnv();
+
+const pool = database.getPool();
+// todo: move to session middleware?
+const sessionConfig = createSessionConfig(pool);
+
+const gracefulShutdown = async () => {
+  console.log("Shutdown signal received. Cleaning up...");
+  await database.close();
+  process.exit(0);
+};
+
+process.on("SIGTERM", gracefulShutdown);
+process.on("SIGINT", gracefulShutdown);
 
 /* 
   Todo error handling:
@@ -32,9 +48,11 @@ const errorManager = new ErrorManager(logger);
       - consider how unhandled exceptions should be handled (Express-Async-Errors?)
 */
 
-process.on("uncaughtException", (error: Error) => {
+process.on("uncaughtException", async (error: Error) => {
+  console.error("Uncaught Exception:", error);
   errorManager.handleError(error);
   if (!errorManager.isTrustedError(error)) {
+    await database.close();
     process.exit(1);
   }
 });
@@ -42,6 +60,7 @@ process.on("uncaughtException", (error: Error) => {
 //What it catches: Rejected Promises that don’t have a .catch() handler.
 //Why it happens: A Promise is rejected but lacks a .catch(), leading to an unhandled rejection.
 process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection:", reason);
   throw reason;
 });
 
@@ -55,8 +74,7 @@ app.use(
 
 app.use(session(sessionConfig));
 
-// todo: check how I can connect this to auth routes only
-// app.use(configureSecurityMiddleware);
+app.use(configureSecurityMiddleware);
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
@@ -68,23 +86,21 @@ app.get("/", (request, response) => {
   response.json({ info: "Node.js, express" });
 });
 
+const apiRoutes = Router();
+
 // Auth routes
-app.use("/auth", authRoutes);
+apiRoutes.use("/auth", authRoutes);
 
-// todo: separate into another file
-app.get("/users", db.getUsers);
-app.get("/user/:id", db.getUserById);
-app.post("/user", db.createUser);
-// todo: test
-app.patch("/user/:id", db.updateUser);
+// User routes
+apiRoutes.use("/users", requireAuth, usersRoutes);
 
-app.use(
-  (error: Error, req: Request, res: Response<ApiError>, next: NextFunction) => {
-    errorHandler.handleError(error, res);
-  }
-);
+app.use("/api", apiRoutes);
 
-app.use((req: Request, res: Response<ApiError>) => {
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+  errorHandler.handleError(error, res);
+});
+
+app.use((req: Request, res: Response) => {
   res.status(HttpStatusCode.NOT_FOUND).json({
     status: "error",
     message: `Cannot ${req.method} ${req.path}`,

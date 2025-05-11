@@ -1,6 +1,6 @@
 import session from "express-session";
-import { pool } from "./database.js";
 import connectPgSimple from "connect-pg-simple";
+import pg from "pg";
 
 const PgSession = connectPgSimple(session);
 
@@ -10,7 +10,7 @@ const PgSession = connectPgSimple(session);
    - Creates session IDs and cookies
    - Provides middleware for session management
    - Manages cookie settings and security
-   - Handles session expiration -- todo: how?
+   - Handles session expiration
 */
 
 /*
@@ -22,29 +22,31 @@ const PgSession = connectPgSimple(session);
    - Enables session persistence across server restarts
 */
 
-const sessionConfig = {
-  store: new PgSession({
-    pool,
-    tableName: "session",
-    createTableIfMissing: true,
-    errorLog(...args) {
-      // todo: handle this properly -- will this make it to my error handler?
-      console.error("Session store error:", ...args);
-      throw new Error("Session store error");
+const createSessionConfig = (pool: pg.Pool) => {
+  return {
+    store: new PgSession({
+      pool,
+      tableName: "session",
+      createTableIfMissing: true,
+      errorLog(...args) {
+        // todo: handle this properly -- will this make it to my error handler?
+        console.error("Session store error:", ...args);
+        throw new Error("Session store error");
+      },
+    }),
+    secret: process.env.SESSION_SECRET!,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.COOKIE_SECURE === "true",
+      httpOnly: true,
+      // todo: investigate what this does and if we need to change it
+      sameSite: process.env.COOKIE_SAME_SITE as "strict" | "lax" | "none",
+      maxAge: parseInt(process.env.SESSION_DURATION!),
+      path: "/",
+      rolling: true,
     },
-  }),
-  secret: process.env.SESSION_SECRET!,
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env.COOKIE_SECURE === "true",
-    httpOnly: true,
-    // todo: investigate what this does and if we need to change it
-    sameSite: process.env.COOKIE_SAME_SITE as "strict" | "lax" | "none",
-    maxAge: parseInt(process.env.SESSION_DURATION!),
-    path: "/",
-    rolling: true,
-  },
+  };
 };
 
-export default sessionConfig;
+export { createSessionConfig };

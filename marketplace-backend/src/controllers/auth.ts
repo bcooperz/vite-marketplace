@@ -1,42 +1,33 @@
 import { createUserParamsSchema } from "../schemas/index.js";
 import bcrypt from "bcrypt";
 import { Router, Request, Response } from "express";
-import { pool } from "../config/database.js";
+import { database } from "../config/database.js";
 
-// const router = Router();
 const router = Router();
 
-// TODO: likely erroring because session isn't setup by this point?
-
 const registerUser = async (req: Request, res: Response) => {
-  const { address, dob, email, firstName, lastName, password, username } =
-    createUserParamsSchema.parse(req.body);
+  const { email, firstName, lastName, password } = createUserParamsSchema.parse(
+    req.body
+  );
   const hashedPassword = await bcrypt.hash(password, 10);
-  const user = await pool.query({
-    text: "INSERT INTO users (username, password, first_name, last_name, email, address, dob) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
+  const user = await database.getPool().query({
+    text: "INSERT INTO users (email, password_hash, created_at, updated_at, first_name, last_name) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
     values: [
-      username,
+      email,
       hashedPassword,
+      new Date(),
+      new Date(),
       firstName,
       lastName,
-      email,
-      address,
-      dob,
     ],
   });
-  //   // todo: test what happens if email already exists
-  console.log(user.rows[0]);
-  //   //todo: test what happens if this fails
-  //   // Session creation
+
+  // Session creation
   req.session.user = {
     id: user.rows[0].id,
     email,
   };
-  //   // req.session.save((err) => {
-  //   //   if (err) {
-  //   //     next(err);
-  //   //   }
-  //   // });
+
   res.status(201).json({
     message: "User created successfully",
   });

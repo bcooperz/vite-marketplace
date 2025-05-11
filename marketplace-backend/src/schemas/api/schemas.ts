@@ -6,7 +6,6 @@ export const getUserByIdParamsSchema = z.object({
 });
 
 export const createUserParamsSchema = z.object({
-  username: z.string(),
   password: z
     .string()
     .min(8)
@@ -16,10 +15,6 @@ export const createUserParamsSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   email: commonValidators.email(),
-  address: z.string(),
-  dob: z
-    .string()
-    .datetime({ message: "Invalid datetime string! Must be UTC." }),
 });
 
 export const updateUserParamsSchema = z.object({

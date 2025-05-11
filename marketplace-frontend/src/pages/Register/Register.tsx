@@ -48,6 +48,7 @@ interface ViewModel {
 const Register = ({ onSuccessHandler }: { onSuccessHandler?: () => void }) => {
   const submitHandler: SubmitHandler<ViewModel> = async (values) => {
     // call register api and callback function to allow parent to redirect or close modal etc
+    // todo: ensure credentials: true if CORS error
     await new Promise((resolve) => setTimeout(resolve, 2000));
     onSuccessHandler?.();
     console.log(values);

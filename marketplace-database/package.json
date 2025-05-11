@@ -2,6 +2,7 @@
   "name": "marketplace-database",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "migrate:make": "knex migrate:make",
     "migrate:latest": "knex migrate:latest",
