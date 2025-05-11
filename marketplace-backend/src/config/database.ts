@@ -1,11 +1,21 @@
 import pg from "pg";
 const { Pool } = pg;
 
+// todo: consider if there's a simpler way of implementing this while still using a singleton pattern
 class Database {
-  private pool: pg.Pool;
+  private pool: pg.Pool | null = null;
   private static instance: Database;
 
-  constructor() {
+  constructor() {}
+
+  public static getInstance(): Database {
+    if (!Database.instance) {
+      Database.instance = new Database();
+    }
+    return Database.instance;
+  }
+
+  public initialize() {
     this.pool = new Pool({
       user: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
@@ -22,24 +32,26 @@ class Database {
     });
   }
 
-  public static getInstance(): Database {
-    if (!Database.instance) {
-      Database.instance = new Database();
-    }
-    return Database.instance;
-  }
-
   public getPool() {
+    if (!this.pool) {
+      throw new Error("Database not initialized");
+    }
     return this.pool;
   }
 
   // todo: fix params as it has multiple overloads
   public async query(params: Parameters<pg.Pool["query"]>) {
+    if (!this.pool) {
+      throw new Error("Database not initialized");
+    }
     return this.pool.query(...params);
   }
 
   public async checkDatabaseConnection() {
     try {
+      if (!this.pool) {
+        throw new Error("Database not initialized");
+      }
       const client = await this.pool.connect();
       await client.query("SELECT NOW()");
       client.release();
@@ -52,6 +64,9 @@ class Database {
   }
 
   public async close() {
+    if (!this.pool) {
+      throw new Error("Database not initialized");
+    }
     await this.pool.end();
   }
 }

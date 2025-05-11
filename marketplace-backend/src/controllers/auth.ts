@@ -10,6 +10,7 @@ const registerUser = async (req: Request, res: Response) => {
     req.body
   );
   const hashedPassword = await bcrypt.hash(password, 10);
+
   const user = await database.getPool().query({
     text: "INSERT INTO users (email, password_hash, created_at, updated_at, first_name, last_name) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
     values: [

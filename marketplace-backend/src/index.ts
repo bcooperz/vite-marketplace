@@ -23,7 +23,9 @@ const errorManager = new ErrorManager(logger);
 loadEnv();
 verifyEnv();
 
+database.initialize();
 const pool = database.getPool();
+
 // todo: move to session middleware?
 const sessionConfig = createSessionConfig(pool);
 
@@ -74,7 +76,7 @@ app.use(
 
 app.use(session(sessionConfig));
 
-app.use(configureSecurityMiddleware);
+// app.use(configureSecurityMiddleware);
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
