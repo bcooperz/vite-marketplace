@@ -13,10 +13,8 @@ import authRoutes from "./controllers/auth.js";
 import requireAuth from "./middleware/requireAuth.js";
 import usersRoutes from "./controllers/users.js";
 import { database } from "./config/database.js";
-import fs from "fs";
-import { resolve } from "path";
-import os from "os";
 import https from "https";
+import { getSslOptions } from "./util/getSslOptions.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -24,11 +22,7 @@ const logger = new Logger();
 const errorHandler = new ErrorHandler(logger);
 const errorManager = new ErrorManager(logger);
 
-// todo: move to config value, add try catch error handling, move to directory in project
-const sslOptions = {
-  key: fs.readFileSync(resolve(os.homedir(), "localhost-key.pem")),
-  cert: fs.readFileSync(resolve(os.homedir(), "localhost.pem")),
-};
+const sslOptions = getSslOptions();
 
 loadEnv();
 verifyEnv();
