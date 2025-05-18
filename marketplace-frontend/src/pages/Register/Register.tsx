@@ -1,10 +1,11 @@
 import FormInput from "@/components/FormInput";
 import type { SubmitHandler } from "react-hook-form";
-import { get, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import classes from "./Register.module.css";
 import sharedClasses from "@/pages/App/App.module.css";
 import { getRegisterInputFn } from "@/lib/libraryWrappers/reactHookForm/utils";
 import RHFDOBInput from "@/components/RHFDOBInput/RHFDOBInput";
+import authenticationApiModules from "@/api/authenticationApiModules";
 
 /*
  TODOs
@@ -49,9 +50,17 @@ const Register = ({ onSuccessHandler }: { onSuccessHandler?: () => void }) => {
   const submitHandler: SubmitHandler<ViewModel> = async (values) => {
     // call register api and callback function to allow parent to redirect or close modal etc
     // todo: ensure credentials: true if CORS error
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    const response = await authenticationApiModules.register({
+      email: values.email,
+      username: values.username,
+      password: values.password,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      dob: new Date(),
+    });
+
     onSuccessHandler?.();
-    console.log(values);
+    console.log(response);
   };
 
   const { register, handleSubmit, formState, control } = useForm<ViewModel>({

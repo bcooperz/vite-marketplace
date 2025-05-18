@@ -7,15 +7,15 @@ export interface CancellablePromise<T> extends Promise<T> {
   [abortSymbol]: AbortController | undefined;
 }
 
-const authToken = "";
-// todo: add auth headers
 // todo: add promise status codes and retry? (if i run into situation where this would be helpful)
 
+// todo: consider what other options I should add
+// cache control?
 const instance = axios.create({
   timeout: 5000,
   responseType: "json",
-  baseURL: "http://localhost:3000/",
-  headers: { common: { Authorization: authToken } },
+  baseURL: "https://localhost:3000/api/",
+  withCredentials: true,
 });
 
 const requestFn = <T>({
@@ -37,7 +37,6 @@ const requestFn = <T>({
 
   if (!signal && !config?.signal) {
     try {
-      console.log("adding abort");
       abortController = new AbortController();
       config.signal = abortController.signal;
     } catch {

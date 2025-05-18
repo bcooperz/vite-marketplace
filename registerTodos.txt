@@ -1,7 +1,6 @@
 
 
  - Backend 
-  = database versioning - continue setting up knex
   = type definitions underneath database project? -- what are different ways these types can be checked against apis called in frontend?
   = how to setup authentication checks for certain api endpoints?
 

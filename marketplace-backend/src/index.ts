@@ -13,12 +13,22 @@ import authRoutes from "./controllers/auth.js";
 import requireAuth from "./middleware/requireAuth.js";
 import usersRoutes from "./controllers/users.js";
 import { database } from "./config/database.js";
+import fs from "fs";
+import { resolve } from "path";
+import os from "os";
+import https from "https";
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const logger = new Logger();
 const errorHandler = new ErrorHandler(logger);
 const errorManager = new ErrorManager(logger);
+
+// todo: move to config value, add try catch error handling, move to directory in project
+const sslOptions = {
+  key: fs.readFileSync(resolve(os.homedir(), "localhost-key.pem")),
+  cert: fs.readFileSync(resolve(os.homedir(), "localhost.pem")),
+};
 
 loadEnv();
 verifyEnv();
@@ -71,6 +81,7 @@ app.use(
     origin: process.env.FRONTEND_URL!,
     // todo: might need to add for cross domain cookies
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   })
 );
 
@@ -109,6 +120,8 @@ app.use((req: Request, res: Response) => {
   });
 });
 
-app.listen(port, () => {
+const server = https.createServer(sslOptions, app);
+
+server.listen(port, () => {
   console.log("App running on port " + port);
 });

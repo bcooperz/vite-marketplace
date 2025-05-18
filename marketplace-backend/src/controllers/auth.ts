@@ -5,6 +5,7 @@ import { database } from "../config/database.js";
 
 const router = Router();
 
+// todo: add dob and username
 const registerUser = async (req: Request, res: Response) => {
   const { email, firstName, lastName, password } = createUserParamsSchema.parse(
     req.body
@@ -28,6 +29,8 @@ const registerUser = async (req: Request, res: Response) => {
     id: user.rows[0].id,
     email,
   };
+
+  console.log(req.session);
 
   res.status(201).json({
     message: "User created successfully",
