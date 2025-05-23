@@ -15,6 +15,7 @@ import usersRoutes from "./controllers/users.js";
 import { database } from "./config/database.js";
 import https from "https";
 import { getSslOptions } from "./util/getSslOptions.js";
+import addSessionExpiryHeader from "./middleware/addSessionExpiryHeader.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -102,6 +103,8 @@ apiRoutes.use("/auth", authRoutes);
 apiRoutes.use("/users", requireAuth, usersRoutes);
 
 app.use("/api", apiRoutes);
+
+app.use(addSessionExpiryHeader);
 
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
   errorHandler.handleError(error, res);

@@ -34,9 +34,10 @@ class Database {
 
   public getPool() {
     if (!this.pool) {
-      throw new Error("Database not initialized");
+      // todo: validate this is ok to do? - e.g. what if called in multiple places?
+      this.initialize();
     }
-    return this.pool;
+    return this.pool!;
   }
 
   // todo: fix params as it has multiple overloads

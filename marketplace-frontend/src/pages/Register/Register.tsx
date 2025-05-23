@@ -9,15 +9,16 @@ import authenticationApiModules from "@/api/authenticationApiModules";
 
 /*
  TODOs
-  - make registration work and save token to DB / start a session 
+  - Zod validation
   - Loading state
-  - create login
-  - validate security - XSS, CSRF
+  - create login page
   - Add error handling
+  - Add toast notifications
+  - validate security - XSS, CSRF
+  - sanitize inputs
   - Add unit and e2e tests
-  - Add form validation
 
-  - Later?
+  - Maybe Later?
   - Redo without hook form and add validation?
   - = and use a different approach to styling / CSS-in-JS, Sass, styled components, tailwind
   - Add CSS preprocessor
@@ -48,21 +49,27 @@ interface ViewModel {
 
 const Register = ({ onSuccessHandler }: { onSuccessHandler?: () => void }) => {
   const submitHandler: SubmitHandler<ViewModel> = async (values) => {
+    // Validate dob is a valid number
     // call register api and callback function to allow parent to redirect or close modal etc
     // todo: ensure credentials: true if CORS error
+
+    // const dob = new Date(values.dob.year, values.dob.month, values.dob.day);
+
     const response = await authenticationApiModules.register({
       email: values.email,
       username: values.username,
       password: values.password,
       firstName: values.firstName,
       lastName: values.lastName,
-      dob: new Date(),
+      // dob: dob.toISOString(),
+      dob: "2025-01-01",
     });
 
     onSuccessHandler?.();
     console.log(response);
   };
 
+  // todo: add validation for dob as numbers within range
   const { register, handleSubmit, formState, control } = useForm<ViewModel>({
     mode: "onBlur",
     defaultValues: {
@@ -78,6 +85,8 @@ const Register = ({ onSuccessHandler }: { onSuccessHandler?: () => void }) => {
         year: "",
       },
     },
+    // todo: add validation
+    // resolver: zodResolver(registerSchema),
   });
 
   const { isSubmitting } = formState;

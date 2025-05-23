@@ -1,3 +1,4 @@
+import type { User } from "@/types/user";
 import { requestFn } from "./axios";
 
 interface RegisterPayload {
@@ -6,15 +7,31 @@ interface RegisterPayload {
   password: string;
   firstName: string;
   lastName: string;
-  dob: Date;
+  dob: string;
+}
+
+interface LoginPayload {
+  email: string;
+  password: string;
+}
+
+interface LoginResponse {
+  user: User;
 }
 
 const authenticationApiModules = {
-  register: (registerModel: RegisterPayload) => {
+  register: (registerPayload: RegisterPayload) => {
     return requestFn({
       method: "POST",
       path: "/auth/register",
-      payload: registerModel,
+      payload: registerPayload,
+    });
+  },
+  login: (loginPayload: LoginPayload): Promise<LoginResponse> => {
+    return requestFn<LoginResponse>({
+      method: "POST",
+      path: "/auth/login",
+      payload: loginPayload,
     });
   },
 };

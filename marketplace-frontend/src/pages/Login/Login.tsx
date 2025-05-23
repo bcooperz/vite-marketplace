@@ -1,20 +1,21 @@
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import FormInput from "@/components/FormInput";
+import authenticationApiModules from "@/api/authenticationApiModules";
 
 interface ViewModel {
-  username: string;
+  email: string;
   password: string;
-  firstName: string;
-  lastName: string;
-  dateOfBirth: Date;
 }
 
 const Login = ({ onSubmitHandler }: { onSubmitHandler?: () => void }) => {
   const submitHandler: SubmitHandler<ViewModel> = async (values) => {
-    onSubmitHandler?.();
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log(values);
+    // onSubmitHandler?.();
+    const { user } = await authenticationApiModules.login({
+      email: values.email,
+      password: values.password,
+    });
+    console.log(user);
   };
 
   const {
@@ -28,17 +29,8 @@ const Login = ({ onSubmitHandler }: { onSubmitHandler?: () => void }) => {
       <h2>Login</h2>
       {isSubmitting && "Loading"}
       <form onSubmit={handleSubmit(submitHandler)}>
-        {/* <label htmlFor="username" style={{ display: "block" }}>
-          Username:{" "}
-        </label> */}
-        <FormInput id="username" placeholder="Username" {...register("username")} />
-        {/* <input
-          id="username"
-          type="text"
-          placeholder="Username"
-          className={classes.textInput}
-          {...register("username")}
-        /> */}
+        <FormInput id="email" placeholder="Email" {...register("email")} />
+        <FormInput id="password" placeholder="Password" {...register("password")} />
         <button
           onClick={() => {
             console.log("submitting");

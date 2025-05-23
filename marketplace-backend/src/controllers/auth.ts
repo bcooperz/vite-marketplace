@@ -1,11 +1,16 @@
-import { createUserParamsSchema } from "../schemas/index.js";
+import {
+  createUserParamsSchema,
+  loginUserParamsSchema,
+} from "../schemas/index.js";
 import bcrypt from "bcrypt";
 import { Router, Request, Response } from "express";
 import { database } from "../config/database.js";
+import NotFoundError from "../errors/classes/NotFoundError.js";
 
 const router = Router();
 
 // todo: add dob and username
+// todo: add response types
 const registerUser = async (req: Request, res: Response) => {
   const { email, firstName, lastName, password } = createUserParamsSchema.parse(
     req.body
@@ -30,25 +35,51 @@ const registerUser = async (req: Request, res: Response) => {
     email,
   };
 
-  console.log(req.session);
+  const sessionExpiresAt = new Date(
+    Date.now() + req.session.cookie.maxAge!
+  ).toISOString();
 
   res.status(201).json({
     message: "User created successfully",
+    sessionExpiresAt,
   });
 };
 
-// const loginUser: RequestHandler = async (req, res) => {
-//   const { email, password } = req.body;
+// todo: is this vulnerable to timing attacks?
+const loginUser = async (req: Request, res: Response) => {
+  const { email, password } = loginUserParamsSchema.parse(req.body);
 
-//   // todo: const isMatch = await bcrypt.compare(plainTextPassword, hashedPassword);
-// };
+  const user = await database
+    .getPool()
+    .query("SELECT * FROM users WHERE email = $1", [email]);
+
+  const isMatch = await bcrypt.compare(password, user.rows?.[0]?.password_hash);
+
+  if (!user.rows?.[0] || !isMatch) {
+    throw new NotFoundError();
+  }
+
+  // Session creation
+  req.session.user = {
+    id: user.rows[0].id,
+    email,
+  };
+
+  // const sessionExpiresAt = new Date(
+  //   Date.now() + req.session.cookie.maxAge!
+  // ).toISOString();
+
+  res.status(200).json({
+    message: "User logged in successfully",
+  });
+};
 
 // const logoutUser: RequestHandler = async (req, res) => {
 //   const { email, password } = req.body;
 // };
 
 router.post("/register", registerUser);
-// router.post("/login", loginUser);
+router.post("/login", loginUser);
 // router.post("/logout", logoutUser);
 
 export default router;

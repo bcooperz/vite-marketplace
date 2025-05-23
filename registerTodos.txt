@@ -41,7 +41,6 @@ src/
 │   ├── auth/
 │   │   ├── RegisterForm.tsx
 │   │   ├── PasswordStrengthMeter.tsx
-│   │   └── EmailVerification.tsx
 ├── hooks/
 │   └── useAuth.ts
 ├── services/
@@ -62,15 +61,6 @@ export const passwordSchema = z.string()
   .regex(/[0-9]/, "Password must contain at least one number")
   .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character");
 
-// Backend middleware
-import rateLimit from 'express-rate-limit';
-
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // 5 attempts
-  message: 'Too many registration attempts, please try again later'
-});
-
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -88,26 +78,3 @@ export const RegisterForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(registerSchema)
   });
-
-  const onSubmit = async (data) => {
-    try {
-      // API call
-    } catch (error) {
-      // Error handling
-    }
-  };
-  
-  // Form JSX
-};
-
-// auth.ts
-import axios from './axios';
-
-export const register = async (data: RegisterData) => {
-  const response = await axios.post('/auth/register', data);
-  return response.data;
-};
-
-
-
-  what is JWT_SECRET for?

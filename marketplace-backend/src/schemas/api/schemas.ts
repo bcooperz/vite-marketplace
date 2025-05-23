@@ -25,3 +25,8 @@ export const updateUserBodySchema = z.object({
   name: z.string(),
   email: commonValidators.email(),
 });
+
+export const loginUserParamsSchema = z.object({
+  email: commonValidators.email(),
+  password: z.string(),
+});
