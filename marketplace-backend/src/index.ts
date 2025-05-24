@@ -82,6 +82,9 @@ app.use(
 
 app.use(session(sessionConfig));
 
+// Add session expiry header middleware before routes
+app.use(addSessionExpiryHeader);
+
 // app.use(configureSecurityMiddleware);
 app.use(bodyParser.json());
 app.use(
@@ -103,8 +106,6 @@ apiRoutes.use("/auth", authRoutes);
 apiRoutes.use("/users", requireAuth, usersRoutes);
 
 app.use("/api", apiRoutes);
-
-app.use(addSessionExpiryHeader);
 
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
   errorHandler.handleError(error, res);

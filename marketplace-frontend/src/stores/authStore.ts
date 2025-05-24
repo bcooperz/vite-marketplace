@@ -6,8 +6,12 @@ interface AuthStore {
   user: User | null;
   sessionExpiresAt: string | null;
   loginStore: (user: User, sessionExpiresAt: string) => void;
+  updateSessionExpiresAt: (sessionExpiresAt: string) => void;
   logoutStore: () => void;
 }
+
+// todo: add automatic logout slightly before session expires
+//        - should this be here or in axios interceptor?
 
 const useAuthStore = create<AuthStore>((set) => ({
   isAuthenticated: false,
@@ -15,6 +19,7 @@ const useAuthStore = create<AuthStore>((set) => ({
   sessionExpiresAt: null,
   loginStore: (user: User, sessionExpiresAt: string) =>
     set({ isAuthenticated: true, user, sessionExpiresAt }),
+  updateSessionExpiresAt: (sessionExpiresAt: string) => set({ sessionExpiresAt }),
   logoutStore: () => set({ isAuthenticated: false, user: null, sessionExpiresAt: null }),
 }));
 

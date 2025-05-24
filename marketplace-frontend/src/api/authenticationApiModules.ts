@@ -27,7 +27,7 @@ const authenticationApiModules = {
       payload: registerPayload,
     });
   },
-  login: (loginPayload: LoginPayload): Promise<LoginResponse> => {
+  login: (loginPayload: LoginPayload) => {
     return requestFn<LoginResponse>({
       method: "POST",
       path: "/auth/login",

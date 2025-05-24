@@ -29,10 +29,12 @@ const registerUser = async (req: Request, res: Response) => {
     ],
   });
 
+  const userDetails = user.rows[0];
+
   // Session creation
   req.session.user = {
-    id: user.rows[0].id,
-    email,
+    id: userDetails.id,
+    email: userDetails.email,
   };
 
   const sessionExpiresAt = new Date(
@@ -40,7 +42,13 @@ const registerUser = async (req: Request, res: Response) => {
   ).toISOString();
 
   res.status(201).json({
-    message: "User created successfully",
+    user: {
+      email: userDetails.email,
+      firstName: userDetails.first_name,
+      lastName: userDetails.last_name,
+      createdAt: userDetails.created_at,
+      updatedAt: userDetails.updated_at,
+    },
     sessionExpiresAt,
   });
 };
@@ -53,24 +61,31 @@ const loginUser = async (req: Request, res: Response) => {
     .getPool()
     .query("SELECT * FROM users WHERE email = $1", [email]);
 
-  const isMatch = await bcrypt.compare(password, user.rows?.[0]?.password_hash);
+  const userDetails = user.rows[0];
 
-  if (!user.rows?.[0] || !isMatch) {
+  if (!userDetails) {
+    throw new NotFoundError();
+  }
+
+  const isMatch = await bcrypt.compare(password, user.rows[0].password_hash);
+  if (!isMatch) {
     throw new NotFoundError();
   }
 
   // Session creation
   req.session.user = {
-    id: user.rows[0].id,
-    email,
+    id: userDetails.id,
+    email: userDetails.email,
   };
 
-  // const sessionExpiresAt = new Date(
-  //   Date.now() + req.session.cookie.maxAge!
-  // ).toISOString();
-
   res.status(200).json({
-    message: "User logged in successfully",
+    user: {
+      email: userDetails.email,
+      firstName: userDetails.first_name,
+      lastName: userDetails.last_name,
+      createdAt: userDetails.created_at,
+      updatedAt: userDetails.updated_at,
+    },
   });
 };
 

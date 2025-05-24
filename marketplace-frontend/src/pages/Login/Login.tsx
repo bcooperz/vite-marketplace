@@ -1,7 +1,7 @@
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import FormInput from "@/components/FormInput";
-import authenticationApiModules from "@/api/authenticationApiModules";
+import useAuth from "@/hooks/useAuth";
 
 interface ViewModel {
   email: string;
@@ -9,13 +9,11 @@ interface ViewModel {
 }
 
 const Login = ({ onSubmitHandler }: { onSubmitHandler?: () => void }) => {
+  const { login } = useAuth();
   const submitHandler: SubmitHandler<ViewModel> = async (values) => {
     // onSubmitHandler?.();
-    const { user } = await authenticationApiModules.login({
-      email: values.email,
-      password: values.password,
-    });
-    console.log(user);
+    const response = await login(values.email, values.password);
+    console.log(response);
   };
 
   const {

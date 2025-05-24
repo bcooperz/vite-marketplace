@@ -1,8 +1,6 @@
 import authenticationApiModules from "@/api/authenticationApiModules";
 import useAuthStore from "@/stores/authStore";
 
-// todo: should this be global state? - zustand store?
-
 /*
   todo:
    - How to get auth status when using session auth - session timer?
@@ -15,12 +13,11 @@ const useAuth = () => {
 
   const login = async (email: string, password: string) => {
     try {
-      // todo: get session expires at from response header
-      const { user } = await authenticationApiModules.login({
+      const response = await authenticationApiModules.login({
         email,
         password,
       });
-      loginStore(user, sessionExpiresAt);
+      loginStore(response.data.user, response.headers["x-session-expires-at"]);
     } catch (error) {
       // todo: handle error
       console.error(error);

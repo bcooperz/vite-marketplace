@@ -1,4 +1,5 @@
-import type { AxiosRequestConfig, Method } from "axios";
+import useAuthStore from "@/stores/authStore";
+import type { AxiosRequestConfig, AxiosResponse, Method } from "axios";
 import axios from "axios";
 
 export const abortSymbol = Symbol("abortController");
@@ -18,7 +19,7 @@ const instance = axios.create({
   withCredentials: true,
 });
 
-const requestFn = <T>({
+const requestFn = <T, R = AxiosResponse<T>>({
   method,
   path,
   payload,
@@ -30,10 +31,10 @@ const requestFn = <T>({
   payload?: any;
   config?: AxiosRequestConfig;
   signal?: AbortSignal;
-}): CancellablePromise<T> => {
+}): CancellablePromise<R> => {
   const METHOD = method.toUpperCase();
   let abortController: AbortController | undefined = undefined;
-  let promise: CancellablePromise<T>;
+  let promise: CancellablePromise<R>;
 
   if (!signal && !config?.signal) {
     try {
@@ -45,18 +46,18 @@ const requestFn = <T>({
   }
 
   if (METHOD === "POST") {
-    promise = instance.post(path, payload, { signal, ...config }) as CancellablePromise<T>;
+    promise = instance.post(path, payload, { signal, ...config }) as CancellablePromise<R>;
   } else if (METHOD === "GET") {
-    promise = instance.get(path, { signal, ...config }) as CancellablePromise<T>;
+    promise = instance.get(path, { signal, ...config }) as CancellablePromise<R>;
   } else if (METHOD === "PUT") {
-    promise = instance.put(path, payload, { signal, ...config }) as CancellablePromise<T>;
+    promise = instance.put(path, payload, { signal, ...config }) as CancellablePromise<R>;
   } else {
     promise = axios.request({
       method,
       url: path,
       params: payload,
       ...config,
-    }) as CancellablePromise<T>;
+    }) as CancellablePromise<R>;
   }
 
   promise[abortSymbol] = abortController;
@@ -79,7 +80,12 @@ instance.interceptors.response.use(
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
 
-    return response.data;
+    const sessionExpiresAt = response.headers["x-session-expires-at"];
+    if (sessionExpiresAt) {
+      useAuthStore.getState().updateSessionExpiresAt(sessionExpiresAt);
+    }
+
+    return response;
   },
   (error) => {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
