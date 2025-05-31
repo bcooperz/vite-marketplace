@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 
+// todo: consider better to use shared maxAge config value for frontend and backend or to get from single api call
 const addSessionExpiryHeader = (
   req: Request,
   res: Response,
