@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import { Router, Request, Response } from "express";
 import { database } from "../config/database.js";
 import NotFoundError from "../errors/classes/NotFoundError.js";
+import { HttpStatusCode } from "../errors/enums/HttpStatusCode.js";
 
 const router = Router();
 
@@ -35,13 +36,11 @@ const registerUser = async (req: Request, res: Response) => {
   req.session.user = {
     id: userDetails.id,
     email: userDetails.email,
+    lastUpdate: Date.now(),
+    lastActivity: new Date().toISOString(),
   };
 
-  const sessionExpiresAt = new Date(
-    Date.now() + req.session.cookie.maxAge!
-  ).toISOString();
-
-  res.status(201).json({
+  res.status(HttpStatusCode.CREATED).json({
     user: {
       email: userDetails.email,
       firstName: userDetails.first_name,
@@ -49,7 +48,6 @@ const registerUser = async (req: Request, res: Response) => {
       createdAt: userDetails.created_at,
       updatedAt: userDetails.updated_at,
     },
-    sessionExpiresAt,
   });
 };
 
@@ -76,9 +74,11 @@ const loginUser = async (req: Request, res: Response) => {
   req.session.user = {
     id: userDetails.id,
     email: userDetails.email,
+    lastActivity: new Date().toISOString(),
+    lastUpdate: Date.now(),
   };
 
-  res.status(200).json({
+  res.status(HttpStatusCode.OK).json({
     user: {
       email: userDetails.email,
       firstName: userDetails.first_name,

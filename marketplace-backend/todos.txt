@@ -1,3 +1,4 @@
+ - add linting
  - Implement authentication
  ==- Implement centralized config
  - Implement security practices, e.g. headers / cookie best practices / CORS

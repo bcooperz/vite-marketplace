@@ -35,7 +35,9 @@ export const getUserById = async (
   next: NextFunction
 ) => {
   const { id } = getUserByIdParamsSchema.parse(request.params);
-  const results = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
+  const results = await database
+    .getPool()
+    .query("SELECT * FROM users WHERE id = $1", [id]);
   const user = results.rows?.[0];
   if (!user) {
     throw new NotFoundError();
@@ -65,11 +67,9 @@ export const updateUser = async (
   const { id } = updateUserParamsSchema.parse(request.params);
   const { name, email } = updateUserBodySchema.parse(request.body);
 
-  await pool.query("UPDATE users SET name=$1, email=$2 WHERE id=$3", [
-    name,
-    email,
-    id,
-  ]);
+  await database
+    .getPool()
+    .query("UPDATE users SET name=$1, email=$2 WHERE id=$3", [name, email, id]);
 
   response.status(HttpStatusCode.OK).send();
 };

@@ -3,9 +3,8 @@ import useAuthStore from "@/stores/authStore";
 
 /*
   todo:
-   - How to get auth status when using session auth - session timer?
    - Redirect to login page if not authenticated - Protected route wrapper? alternatives?
-   - Managing session persistence?
+   - use server time to calculate session expiry time?
 */
 
 const useAuth = () => {

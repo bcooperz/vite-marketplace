@@ -11,6 +11,7 @@ interface AuthStore {
 }
 
 // todo: add automatic logout slightly before session expires
+//        - add graceful reauth prompt to user
 //        - should this be here or in axios interceptor?
 
 const useAuthStore = create<AuthStore>((set) => ({

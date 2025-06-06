@@ -7,6 +7,7 @@ const router = Router();
 
 const getUser = async (req: Request, res: Response) => {
   const email = req.session.user.email;
+
   const user = await database
     .getPool()
     .query("SELECT * FROM users WHERE email = $1", [email]);
