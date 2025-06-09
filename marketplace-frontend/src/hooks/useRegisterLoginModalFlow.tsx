@@ -1,4 +1,4 @@
-import { useModal } from "@/context/useModal";
+import { useModal } from "@/hooks/useModal";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 

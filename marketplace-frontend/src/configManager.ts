@@ -1,5 +1,3 @@
-import { requestFn } from "./api/axios";
-
 interface Config {
   sessionDuration: number;
 }
@@ -19,15 +17,26 @@ class ConfigManager {
     if (this.config) return;
 
     // todo: check if config value would be set immedietly after promise is resolved when called from another function
-    return requestFn<Config>({
-      method: "GET",
-      path: "config",
-    }).then((res) => {
-      this.config = res.data;
-    });
+    // return requestFn<Config>({
+    //   method: "GET",
+    //   path: "config",
+    // }).then((res) => {
+    //   this.config = res.data;
+    // });
+
+    return fetch("https://localhost:3000/api/config", {
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json() as Promise<Config>)
+      .then((data) => {
+        this.config = data;
+      });
   }
 
-  public async getConfig() {
+  public getConfig() {
     if (!this.config) throw new Error("Config not initialized");
     return this.config;
   }

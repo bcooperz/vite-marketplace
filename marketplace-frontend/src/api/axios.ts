@@ -1,12 +1,13 @@
+import ConfigManager from "@/configManager";
 import useAuthStore from "@/stores/authStore";
+import type {
+  AxiosRequestConfigWithMetadata,
+  AxiosResponseWithMetadata,
+  CancellablePromise,
+} from "@/types/axios";
+import { abortSymbol } from "@/types/axios";
 import type { AxiosRequestConfig, AxiosResponse, Method } from "axios";
 import axios from "axios";
-
-export const abortSymbol = Symbol("abortController");
-
-export interface CancellablePromise<T> extends Promise<T> {
-  [abortSymbol]: AbortController | undefined;
-}
 
 // todo: add promise status codes and retry? (if i run into situation where this would be helpful)
 
@@ -66,8 +67,13 @@ const requestFn = <T, R = AxiosResponse<T>>({
 };
 
 instance.interceptors.request.use(
-  (config) => {
+  (config: AxiosRequestConfigWithMetadata) => {
     // Do something before request is sent
+
+    config.metadata = {
+      lastUpdate: Date.now(),
+    };
+
     return config;
   },
   (error) => {
@@ -76,13 +82,18 @@ instance.interceptors.request.use(
 );
 
 instance.interceptors.response.use(
-  (response) => {
+  (response: AxiosResponseWithMetadata) => {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
 
-    const sessionExpiresAt = response.headers["x-session-expires-at"];
-    if (sessionExpiresAt) {
-      useAuthStore.getState().updateSessionExpiresAt(sessionExpiresAt);
+    const sessionDuration = ConfigManager.getInstance().getConfig().sessionDuration;
+
+    // todo: review and compare with PT approach
+    if (response.config.metadata?.lastUpdate) {
+      useAuthStore.getState().updateSessionExpiresAt({
+        lastUpdate: response.config.metadata.lastUpdate,
+        sessionDuration,
+      });
     }
 
     return response;
