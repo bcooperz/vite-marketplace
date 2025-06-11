@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import ModalContext from "./ModalContext";
 import ModalTemplate from "@/components/Modal/Modal";
 import ModalRegistry from "@/services/modalRegistry";
-// import useModalDetailsStore from "@/stores/modalDetailsStore";
+import ModalAlreadyOpen from "@/errors/classes/ModalAlreadyOpen";
 
 const ModalProvider = ({ children }: { children: ReactElement }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -13,20 +13,27 @@ const ModalProvider = ({ children }: { children: ReactElement }) => {
     Resolve: null,
   });
 
-  // const { modalDetails, setModalDetails } = useModalDetailsStore(dialogRef);
-
-  // todo: add useCallback back and test
-  const closeModal =
-    // useCallback(
+  const closeModal = useCallback(
     <T,>(result: T) => {
-      modalDetails?.Resolve?.(result);
-      setModalDetails({ Component: null, Resolve: null });
-    };
-  //   [modalDetails],
-  // );
+      console.log("closeModal", result);
+      if (modalDetails.Resolve) {
+        if (dialogRef.current?.open) {
+          dialogRef.current?.close();
+        }
+        modalDetails.Resolve(result);
+        setModalDetails({ Component: null, Resolve: null });
+      }
+    },
+    [modalDetails],
+  );
 
   const createModal: CreateModalType = useCallback((Component) => {
-    return new Promise((resolve) => {
+    // todo: consider what axios should do if modal is already open -- show a toast?
+    return new Promise((resolve, reject) => {
+      if (dialogRef.current?.open) {
+        reject(new ModalAlreadyOpen());
+        return;
+      }
       dialogRef.current?.showModal();
       setModalDetails({ Component: Component, Resolve: resolve });
     });
@@ -37,6 +44,19 @@ const ModalProvider = ({ children }: { children: ReactElement }) => {
   }, [createModal]);
 
   const { Component } = modalDetails;
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+
+    return () => {
+      console.log("useEffect cleanup");
+      if (dialog?.open) {
+        // todo: consider -- THIS SHOULD END UP CALLING THE CLOSE MODAL FUNCTION
+        dialog.close();
+        ModalRegistry.getInstance().setCreateModalFunction(null);
+      }
+    };
+  }, []);
 
   return (
     <ModalContext.Provider value={{ createModal }}>

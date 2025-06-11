@@ -15,7 +15,6 @@ import usersRoutes from "./controllers/users.js";
 import { database } from "./config/database.js";
 import https from "https";
 import { getSslOptions } from "./util/getSslOptions.js";
-import addSessionExpiryHeader from "./middleware/addSessionExpiryHeader.js";
 import updateSessionActivity from "./middleware/updateSessionActivity.js";
 import configRoutes from "./controllers/config.js";
 
@@ -83,10 +82,6 @@ app.use(
 );
 
 app.use(session(sessionConfig));
-
-// Add session expiry header middleware before routes
-// todo: remove
-app.use(addSessionExpiryHeader);
 
 app.use(updateSessionActivity);
 

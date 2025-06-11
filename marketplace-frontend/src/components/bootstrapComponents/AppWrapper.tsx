@@ -1,5 +1,6 @@
 import React, { Suspense, useEffect, useState } from "react";
 import bootstrap from "@/bootstrap";
+import { ToastContainer } from "react-toastify";
 
 const ModalProvider = React.lazy(() => import("@/context/ModalProvider.tsx"));
 const RouteProvider = React.lazy(() => import("@/components/RouteProvider.tsx"));
@@ -27,6 +28,9 @@ const AppWrapper = () => {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
+      {/* // todo: Consider if toast should be in another microapp / react app */}
+      {/* todo: make toast display on top of page */}
+      <ToastContainer position="top-center" autoClose={4000} />
       <ModalProvider>
         <RouteProvider />
       </ModalProvider>
