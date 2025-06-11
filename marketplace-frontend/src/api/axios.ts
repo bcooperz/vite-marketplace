@@ -1,5 +1,4 @@
-import ConfigManager from "@/configManager";
-import useAuthStore from "@/stores/authStore";
+import AuthService from "@/services/authService";
 import type {
   AxiosRequestConfigWithMetadata,
   AxiosResponseWithMetadata,
@@ -86,15 +85,9 @@ instance.interceptors.response.use(
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
 
-    const sessionDuration = ConfigManager.getInstance().getConfig().sessionDuration;
-
-    // todo: review and compare with PT approach
-    if (response.config.metadata?.lastUpdate) {
-      useAuthStore.getState().updateSessionExpiresAt({
-        lastUpdate: response.config.metadata.lastUpdate,
-        sessionDuration,
-      });
-    }
+    AuthService.getInstance().updateSessionExpiryTimeouts({
+      lastUpdate: response.config.metadata?.lastUpdate,
+    });
 
     return response;
   },

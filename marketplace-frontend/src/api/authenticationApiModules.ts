@@ -17,23 +17,36 @@ interface LoginPayload {
 
 interface LoginResponse {
   user: User;
+  updatedAt: number;
 }
 
-const authenticationApiModules = {
-  register: (registerPayload: RegisterPayload) => {
-    return requestFn({
-      method: "POST",
-      path: "/auth/register",
-      payload: registerPayload,
-    });
-  },
-  login: (loginPayload: LoginPayload) => {
-    return requestFn<LoginResponse>({
-      method: "POST",
-      path: "/auth/login",
-      payload: loginPayload,
-    });
-  },
+const authenticationApiModules = () => {
+  const subPath = "/auth";
+
+  return {
+    register: (registerPayload: RegisterPayload) => {
+      return requestFn({
+        method: "POST",
+        path: `${subPath}/register`,
+        payload: registerPayload,
+      });
+    },
+    login: (loginPayload: LoginPayload) => {
+      return requestFn<LoginResponse>({
+        method: "POST",
+        path: `${subPath}/login`,
+        payload: loginPayload,
+      });
+    },
+    reAuthenticate: () => {
+      return requestFn({
+        method: "GET",
+        path: `${subPath}/reAuthenticate`,
+      });
+    },
+  };
 };
 
-export default authenticationApiModules;
+const authenticationApi = authenticationApiModules();
+
+export default authenticationApi;
