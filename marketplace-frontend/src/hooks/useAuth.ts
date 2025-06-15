@@ -1,4 +1,5 @@
 import authenticationApiModules from "@/api/authenticationApiModules";
+import AuthService from "@/services/authService";
 import useAuthStore from "@/stores/authStore";
 
 /*
@@ -8,7 +9,7 @@ import useAuthStore from "@/stores/authStore";
 */
 
 const useAuth = () => {
-  const { isAuthenticated, user, loginStore, logoutStore } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
 
   const login = async (email: string, password: string) => {
     try {
@@ -16,7 +17,10 @@ const useAuth = () => {
         email,
         password,
       });
-      loginStore(response.data.user, response.headers["x-session-expires-at"]);
+      AuthService.getInstance().login({
+        user: response.data.user,
+        updatedAt: response.data.updatedAt,
+      });
     } catch (error) {
       // todo: handle error
       console.error(error);
@@ -24,7 +28,7 @@ const useAuth = () => {
   };
 
   const logout = () => {
-    logoutStore();
+    AuthService.getInstance().logout();
   };
 
   console.log("isAuthenticated", isAuthenticated);

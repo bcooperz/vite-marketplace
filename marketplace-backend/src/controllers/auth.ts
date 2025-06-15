@@ -83,9 +83,20 @@ const loginUser = async (req: Request, res: Response) => {
       email: userDetails.email,
       firstName: userDetails.first_name,
       lastName: userDetails.last_name,
-      createdAt: userDetails.created_at,
-      updatedAt: userDetails.updated_at,
     },
+    updatedAt: Date.now(),
+  });
+};
+
+const reAuthenticate = async (req: Request, res: Response) => {
+  const user = req.session.user;
+
+  if (!user) {
+    throw new NotFoundError();
+  }
+
+  res.status(HttpStatusCode.OK).json({
+    user: user,
   });
 };
 
@@ -95,6 +106,7 @@ const loginUser = async (req: Request, res: Response) => {
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
+router.get("/reAuthenticate", reAuthenticate);
 // router.post("/logout", logoutUser);
 
 export default router;

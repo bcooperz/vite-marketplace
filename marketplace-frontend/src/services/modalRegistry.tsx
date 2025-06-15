@@ -1,3 +1,4 @@
+import CreateModalNotInitialised from "@/errors/classes/CreateModalNotInitialised";
 import type { CreateModalType, ModalComponent } from "@/types/modal.types";
 
 class ModalRegistry {
@@ -11,13 +12,13 @@ class ModalRegistry {
     return ModalRegistry.instance;
   }
 
-  setCreateModalFunction(createModalFunction: CreateModalType) {
+  setCreateModalFunction(createModalFunction: CreateModalType | null) {
     this.createModalFunction = createModalFunction;
   }
 
   createModal(Component: ModalComponent<any>) {
     if (!this.createModalFunction) {
-      throw new Error("Create modal function not set");
+      throw new CreateModalNotInitialised();
     }
     return this.createModalFunction(Component);
   }
