@@ -1,37 +1,27 @@
-import type { User } from "@/types/user";
+import type {
+  CreateUserPayload,
+  LoginUserPayload,
+} from "../../../marketplace-types/src/schemas/auth";
 import { requestFn } from "./axios";
-
-interface RegisterPayload {
-  email: string;
-  username: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  dob: string;
-}
-
-interface LoginPayload {
-  email: string;
-  password: string;
-}
-
-interface LoginResponse {
-  user: User;
-  updatedAt: number;
-}
+import type {
+  LoginResponse,
+  ReAuthenticateResponse,
+  RegisterResponse,
+} from "../../../marketplace-types/src/responseTypes/auth";
 
 const authenticationApiModules = () => {
   const subPath = "/auth";
 
+  // todo: Check all these types are correct
   return {
-    register: (registerPayload: RegisterPayload) => {
-      return requestFn({
+    register: (registerPayload: CreateUserPayload) => {
+      return requestFn<RegisterResponse>({
         method: "POST",
         path: `${subPath}/register`,
         payload: registerPayload,
       });
     },
-    login: (loginPayload: LoginPayload) => {
+    login: (loginPayload: LoginUserPayload) => {
       return requestFn<LoginResponse>({
         method: "POST",
         path: `${subPath}/login`,
@@ -39,7 +29,7 @@ const authenticationApiModules = () => {
       });
     },
     reAuthenticate: () => {
-      return requestFn({
+      return requestFn<ReAuthenticateResponse>({
         method: "GET",
         path: `${subPath}/reAuthenticate`,
       });

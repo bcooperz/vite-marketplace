@@ -4,6 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "tsc": "tsc",
     "build-prod": "rm -rf dist/ & tsc",
     "debug-prod": "node --inspect dist/index.js",
     "run-prod": "node dist/index.js",

@@ -57,12 +57,12 @@ const Register = ({ onSuccessHandler }: { onSuccessHandler?: () => void }) => {
 
     const response = await authenticationApiModules.register({
       email: values.email,
-      username: values.username,
+      // username: values.username,
       password: values.password,
       firstName: values.firstName,
       lastName: values.lastName,
       // dob: dob.toISOString(),
-      dob: "2025-01-01",
+      // dob: "2025-01-01",
     });
 
     onSuccessHandler?.();

@@ -38,6 +38,12 @@ class AuthService {
     this.updateSessionExpiryTimeouts({ lastUpdate: updatedAt });
   }
 
+  public reAuthenticate({ updatedAt }: { updatedAt: number }) {
+    const sessionDuration = ConfigManager.getInstance().getConfig().sessionDuration;
+    useAuthStore.getState().updateSessionExpiresAt({ lastUpdate: updatedAt, sessionDuration });
+    this.updateSessionExpiryTimeouts({ lastUpdate: updatedAt });
+  }
+
   public logout() {
     this.clearLogOutTimeout();
     this.clearReAuthTimeout();

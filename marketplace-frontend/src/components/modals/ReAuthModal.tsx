@@ -18,6 +18,7 @@ const ReAuthModal = ({ handleOk }: ReAuthModalProps) => {
             // todo: would this always fail if user is not authenticated?
             //       in which case I wouldn't need a log out timer in addition to the re-auth timer?
             const response = await authenticationApi.reAuthenticate();
+            AuthService.getInstance().reAuthenticate({ updatedAt: response.data.updatedAt });
             console.log("response", response);
             handleOk(true);
           } catch (error) {

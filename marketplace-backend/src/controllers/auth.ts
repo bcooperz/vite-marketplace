@@ -1,7 +1,8 @@
 import {
   createUserParamsSchema,
   loginUserParamsSchema,
-} from "../schemas/index.js";
+} from "../../../marketplace-types/src/schemas/auth.ts";
+// todo: fix rootDir issue
 import bcrypt from "bcrypt";
 import { Router, Request, Response } from "express";
 import { database } from "../config/database.js";
@@ -32,22 +33,24 @@ const registerUser = async (req: Request, res: Response) => {
 
   const userDetails = user.rows[0];
 
+  const lastUpdate = Date.now();
+  const lastActivity = new Date().toISOString();
+
   // Session creation
   req.session.user = {
     id: userDetails.id,
-    email: userDetails.email,
-    lastUpdate: Date.now(),
-    lastActivity: new Date().toISOString(),
+    email: email,
+    lastUpdate: lastUpdate,
+    lastActivity: lastActivity,
   };
 
   res.status(HttpStatusCode.CREATED).json({
     user: {
-      email: userDetails.email,
-      firstName: userDetails.first_name,
-      lastName: userDetails.last_name,
-      createdAt: userDetails.created_at,
-      updatedAt: userDetails.updated_at,
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
     },
+    updatedAt: lastUpdate,
   });
 };
 
@@ -70,12 +73,14 @@ const loginUser = async (req: Request, res: Response) => {
     throw new NotFoundError();
   }
 
+  const lastUpdate = new Date().getTime();
+
   // Session creation
   req.session.user = {
     id: userDetails.id,
     email: userDetails.email,
     lastActivity: new Date().toISOString(),
-    lastUpdate: Date.now(),
+    lastUpdate: lastUpdate,
   };
 
   res.status(HttpStatusCode.OK).json({
@@ -84,7 +89,7 @@ const loginUser = async (req: Request, res: Response) => {
       firstName: userDetails.first_name,
       lastName: userDetails.last_name,
     },
-    updatedAt: Date.now(),
+    updatedAt: lastUpdate,
   });
 };
 
@@ -95,8 +100,13 @@ const reAuthenticate = async (req: Request, res: Response) => {
     throw new NotFoundError();
   }
 
+  const lastUpdate = new Date().getTime();
+
   res.status(HttpStatusCode.OK).json({
-    user: user,
+    user: {
+      email: user.email,
+    },
+    updatedAt: lastUpdate,
   });
 };
 

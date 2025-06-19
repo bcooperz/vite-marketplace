@@ -12,11 +12,20 @@ const getUser = async (req: Request, res: Response) => {
     .getPool()
     .query("SELECT * FROM users WHERE email = $1", [email]);
 
-  if (!user.rows[0]) {
+  const userDetails = user.rows[0];
+
+  if (!userDetails) {
     throw new NotFoundError();
   }
 
-  res.status(HttpStatusCode.OK).json(user.rows[0]);
+  const lastUpdate = new Date().getTime();
+
+  res.status(HttpStatusCode.OK).json({
+    user: {
+      email: userDetails.email,
+    },
+    updatedAt: lastUpdate,
+  });
 };
 
 router.get("/user", getUser);

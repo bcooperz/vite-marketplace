@@ -16,7 +16,11 @@ class ModalRegistry {
     this.createModalFunction = createModalFunction;
   }
 
-  createModal(Component: ModalComponent<any>) {
+  /**
+   * @param Component - The modal component to create
+   * @throws CreateModalNotInitialised error if the createModalFunction is not set
+   */
+  createModal(Component: ModalComponent<any>): Promise<any> {
     if (!this.createModalFunction) {
       throw new CreateModalNotInitialised();
     }
