@@ -1,13 +1,11 @@
 import type {
   CreateUserPayload,
   LoginUserPayload,
-} from "../../../marketplace-types/src/schemas/auth";
-import { requestFn } from "./axios";
-import type {
   LoginResponse,
   ReAuthenticateResponse,
   RegisterResponse,
-} from "../../../marketplace-types/src/responseTypes/auth";
+} from "@marketplace-types";
+import { requestFn } from "./axios";
 
 const authenticationApiModules = () => {
   const subPath = "/auth";

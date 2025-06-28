@@ -30,7 +30,3 @@ export const loginUserParamsSchema = z.object({
   email: commonValidators.email(),
   password: z.string(),
 });
-
-export type CreateUserPayload = z.infer<typeof createUserParamsSchema>;
-export type LoginUserPayload = z.infer<typeof loginUserParamsSchema>;
-export type GetUserPayload = z.infer<typeof getUserByIdParamsSchema>;

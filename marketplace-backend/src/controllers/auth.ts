@@ -1,7 +1,7 @@
 import {
   createUserParamsSchema,
   loginUserParamsSchema,
-} from "../../../marketplace-types/src/schemas/auth.ts";
+} from "@marketplace-types";
 // todo: fix rootDir issue
 import bcrypt from "bcrypt";
 import { Router, Request, Response } from "express";

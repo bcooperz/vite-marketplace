@@ -1,5 +1,5 @@
 import { requestFn } from "./axios";
-import type { GetUserPayload } from "../../../marketplace-types/src/schemas/auth";
+import type { GetUserPayload } from "@marketplace-types";
 
 const userApiModules = {
   getUser: () => {

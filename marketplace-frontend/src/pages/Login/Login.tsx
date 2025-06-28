@@ -8,7 +8,8 @@ interface ViewModel {
   password: string;
 }
 
-const Login = ({ onSubmitHandler }: { onSubmitHandler?: () => void }) => {
+// todo: consider if onsubmithandler is needed
+const Login = () => {
   const { login } = useAuth();
   const submitHandler: SubmitHandler<ViewModel> = async (values) => {
     // onSubmitHandler?.();

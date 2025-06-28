@@ -1,0 +1,3 @@
+Todo: consider validity of package.json for types package
+
+Should schema be separate from types? e.g. so it can be imported as a dev depedency for example?

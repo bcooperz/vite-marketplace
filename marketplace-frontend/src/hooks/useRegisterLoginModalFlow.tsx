@@ -23,11 +23,12 @@ const useRegisterLoginModalFlow = () => {
 
     console.log("opening login");
 
-    const loginResult = await createModal<boolean>((handlers) => (
+    // todo: consider if handlers are needed here
+    const loginResult = await createModal<boolean>(() => (
       <Login
-        onSubmitHandler={() => {
-          handlers.handleOk(true);
-        }}
+      // onSubmitHandler={() => {
+      //   handlers.handleOk(true);
+      // }}
       />
     ));
     console.log("loginResult", loginResult);

@@ -1,0 +1,23 @@
+packages:
+  # Include all marketplace packages (including scoped ones)
+  - "marketplace-frontend"
+  - "marketplace-backend"
+  - "marketplace-types"
+  - "@marketplace-*"
+
+  # Exclude common directories
+  - "!**/node_modules/**"
+  - "!**/dist/**"
+  - "!**/build/**"
+  - "!**/.pnpm-store/**"
+  - "!**/coverage/**"
+  - "!**/.nyc_output/**"
+  - "!**/.next/**"
+  - "!**/.nuxt/**"
+  - "!**/.output/**"
+  - "!**/.cache/**"
+  - "!**/tmp/**"
+  - "!**/temp/**"
+# Todo: exclude marketplace database?
+
+# todo: what is this file for and is this configured correctly?

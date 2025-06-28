@@ -1,18 +1,54 @@
 {
-  "name": "@marketplace/types",
+  "name": "@marketplace-types",
   "version": "1.0.0",
-  "private": true,
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./schemas": {
+      "types": "./dist/schemas/index.d.ts",
+      "import": "./dist/schemas/index.js"
+    },
+    "./schemas/auth": {
+      "types": "./dist/schemas/auth.d.ts",
+      "import": "./dist/schemas/auth.js"
+    },
+    "./schemas/common": {
+      "types": "./dist/schemas/common.d.ts",
+      "import": "./dist/schemas/common.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js"
+    },
+    "./types/payloadTypes": {
+      "types": "./dist/types/payloadTypes/index.d.ts",
+      "import": "./dist/types/payloadTypes/index.js"
+    },
+    "./types/payloadTypes/auth": {
+      "types": "./dist/types/payloadTypes/auth.d.ts",
+      "import": "./dist/types/payloadTypes/auth.js"
+    },
+    "./types/responseTypes": {
+      "types": "./dist/types/responseTypes/index.d.ts",
+      "import": "./dist/types/responseTypes/index.js"
+    },
+    "./types/responseTypes/auth": {
+      "types": "./dist/types/responseTypes/auth.d.ts",
+      "import": "./dist/types/responseTypes/auth.js"
+    }
+  },
   "scripts": {
+    "build": "tsc",
     "tsc": "tsc",
     "watch": "tsc -w"
   },
   "dependencies": {
-    "zod": "^3.24.2"
-  },
-  "devDependencies": {
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.0",
+    "zod": "^3.24.0"
   }
 }

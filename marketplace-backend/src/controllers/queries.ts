@@ -4,7 +4,7 @@ import {
   getUserByIdParamsSchema,
   updateUserBodySchema,
   updateUserParamsSchema,
-} from "../../../marketplace-types/src/schemas/auth.js";
+} from "@marketplace-types";
 import { InputType } from "../types/api/queries.types.js";
 import { HttpStatusCode } from "../errors/enums/HttpStatusCode.js";
 import NotFoundError from "../errors/classes/NotFoundError.js";

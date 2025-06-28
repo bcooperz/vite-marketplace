@@ -2,7 +2,12 @@
   "extends": "./tsconfig.node23.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "baseUrl": ".",
+    "paths": {
+      "@marketplace-types/*": ["../marketplace-types/dist/*"],
+      "@marketplace-types": ["../marketplace-types/dist"]
+    }
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
