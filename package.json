@@ -15,7 +15,10 @@
     "clean": "pnpm --recursive exec rm -rf node_modules dist",
     "install:all": "pnpm install",
     "lint": "pnpm --recursive lint",
-    "type-check": "pnpm --recursive tsc"
+    "type-check": "pnpm --recursive tsc",
+    "migrate:latest": "pnpm --filter marketplace-database migrate:latest",
+    "migrate:rollback": "pnpm --filter marketplace-database migrate:rollback",
+    "migrate:make": "pnpm --filter marketplace-database migrate:make"
   },
   "devDependencies": {
     "turbo": "^2.5.4",

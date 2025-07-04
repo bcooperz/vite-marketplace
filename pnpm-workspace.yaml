@@ -3,6 +3,7 @@ packages:
   - "marketplace-frontend"
   - "marketplace-backend"
   - "marketplace-types"
+  - "marketplace-database"
   - "@marketplace-*"
 
   # Exclude common directories
