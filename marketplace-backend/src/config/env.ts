@@ -28,6 +28,7 @@ const verifyEnv = () => {
     "FRONTEND_URL",
     "JWT_SECRET",
     "JWT_EXPIRES_IN",
+    "SESSION_UPDATE_INTERVAL",
   ];
 
   const missingVars = requiredVars.filter((varName) => !process.env[varName]);

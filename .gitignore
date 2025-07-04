@@ -10,11 +10,13 @@
 **/node_modules
 **/dist
 **/dist-ssr
-**/*.local
 
 # pnpm
 .pnpm-store/
 pnpm-lock.yaml
+
+#turbo
+.turbo
 
 # Editor directories and files
 **/.vscode/*

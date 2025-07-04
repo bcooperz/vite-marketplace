@@ -35,13 +35,13 @@ class AuthService {
   public login({ user, updatedAt }: { user: User; updatedAt: number }) {
     const sessionExpiresAt = updatedAt + ConfigManager.getInstance().getConfig().sessionDuration;
     useAuthStore.getState().loginStore(user, sessionExpiresAt);
-    this.updateSessionExpiryTimeouts({ lastUpdate: updatedAt });
+    this.updateSessionExpiryTimers({ lastUpdate: updatedAt });
   }
 
   public reAuthenticate({ updatedAt }: { updatedAt: number }) {
     const sessionDuration = ConfigManager.getInstance().getConfig().sessionDuration;
     useAuthStore.getState().updateSessionExpiresAt({ lastUpdate: updatedAt, sessionDuration });
-    this.updateSessionExpiryTimeouts({ lastUpdate: updatedAt });
+    this.updateSessionExpiryTimers({ lastUpdate: updatedAt });
   }
 
   public logout() {
@@ -83,7 +83,7 @@ class AuthService {
     }, sessionExpiryTime - THIRTY_SECONDS);
   }
 
-  public updateSessionExpiryTimeouts({ lastUpdate }: { lastUpdate?: number }) {
+  private updateSessionExpiryTimers({ lastUpdate }: { lastUpdate?: number }) {
     if (!lastUpdate) return;
 
     const sessionDuration = ConfigManager.getInstance().getConfig().sessionDuration;

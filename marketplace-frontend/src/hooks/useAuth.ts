@@ -5,7 +5,6 @@ import useAuthStore from "@/stores/authStore";
 /*
   todo:
    - Redirect to login page if not authenticated - Protected route wrapper? alternatives?
-   - use server time to calculate session expiry time?
 */
 
 const useAuth = () => {

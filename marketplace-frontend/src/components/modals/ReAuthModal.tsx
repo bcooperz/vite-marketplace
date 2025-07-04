@@ -6,7 +6,6 @@ interface ReAuthModalProps {
   handleOk: (result: ModalResult<boolean>) => void;
 }
 
-// todo: add api call to re-authenticate
 const ReAuthModal = ({ handleOk }: ReAuthModalProps) => {
   return (
     <div>

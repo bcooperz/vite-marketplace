@@ -45,10 +45,10 @@
   "scripts": {
     "build": "tsc",
     "tsc": "tsc",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "dev": "tsc -w"
   },
   "dependencies": {
-    "typescript": "^5.7.0",
     "zod": "^3.24.0"
   }
 }

@@ -1,1 +1,27 @@
 api docs
+
+setup shared tsconfig, jest, and eslint??
+
+MONOREPOs
+ - check benefits/drawbacks of https://dev.to/tecvanfe/frontend-monorepos-a-comprehensive-guide-2d31
+
+!! make db project also run with build
+
+how to make frontend run after backend
+
+consider adding build system such as nx, turborepo - turbo easier?
+ - ask LLM if it's necessary, when and why it is and for pnpm projects
+   = build caching?
+   = Selective Builds and Tests: Configure build systems and CI/CD pipelines to only build and test projects affected by code changes
+   = Selective Deployments: Configure CI/CD to deploy only the projects or packages that have been changed.
+   = Parallel Execution: Leverage parallel execution for builds and tests to reduce overall execution time.
+   
+when would sharing packages be useful in a monorepo?
+ - how does this work?
+
+ Tooling Requirements
+Effectively managing a frontend monorepo relies heavily on specialized tooling.
+
+Build System Dependency: A robust build system (e.g., Nx, Turborepo, Bazel) is essential for managing dependencies, caching builds, and optimizing build times.
+Workspace Management: Workspace managers (e.g., npm workspaces, Yarn workspaces, pnpm workspaces) are crucial for managing dependencies and linking packages within the monorepo.
+CI/CD Configuration: CI/CD pipelines need to be configured to handle monorepo workflows, including selective builds and tests.

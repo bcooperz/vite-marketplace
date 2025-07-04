@@ -65,7 +65,7 @@ process.on("uncaughtException", async (error: Error) => {
   }
 });
 
-//What it catches: Rejected Promises that don’t have a .catch() handler.
+//What it catches: Rejected Promises that don't have a .catch() handler.
 //Why it happens: A Promise is rejected but lacks a .catch(), leading to an unhandled rejection.
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection:", reason);
@@ -119,8 +119,14 @@ app.use((req: Request, res: Response) => {
   });
 });
 
-const server = https.createServer(sslOptions, app);
-
-server.listen(port, () => {
-  console.log("App running on port " + port);
-});
+// Use HTTP for development, HTTPS for production
+if (process.env.NODE_ENV === "production") {
+  const server = https.createServer(sslOptions, app);
+  server.listen(port, () => {
+    console.log("App running on port " + port);
+  });
+} else {
+  app.listen(port, () => {
+    console.log("App running on port " + port);
+  });
+}
