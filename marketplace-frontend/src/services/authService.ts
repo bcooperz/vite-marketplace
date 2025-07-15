@@ -16,9 +16,7 @@ class AuthService {
   private logOutTimeout: NodeJS.Timeout | null = null;
 
   public static getInstance() {
-    if (!AuthService.instance) {
-      AuthService.instance = new AuthService();
-    }
+    AuthService.instance ??= new AuthService();
     return AuthService.instance;
   }
 

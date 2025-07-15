@@ -8,8 +8,8 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["./src/*"],
-      "@marketplace-types/*": ["../marketplace-types/dist/*"],
-      "@marketplace-types": ["../marketplace-types/dist"]
+      "@marketplace-types/*": ["../marketplace-types/src/*"],
+      "@marketplace-types": ["../marketplace-types/src"]
     },
 
     /* Bundler mode */

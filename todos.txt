@@ -5,10 +5,8 @@ setup shared tsconfig, jest, and eslint??
 MONOREPOs
  - check benefits/drawbacks of https://dev.to/tecvanfe/frontend-monorepos-a-comprehensive-guide-2d31
 
-!! make db project also run with build
-
-how to make frontend run after backend
-
+how to make db build before backend
+ 
 consider adding build system such as nx, turborepo - turbo easier?
  - ask LLM if it's necessary, when and why it is and for pnpm projects
    = build caching?

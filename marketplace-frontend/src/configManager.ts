@@ -7,9 +7,7 @@ class ConfigManager {
   private config: Config | null = null;
 
   public static getInstance() {
-    if (!ConfigManager.instance) {
-      ConfigManager.instance = new ConfigManager();
-    }
+    ConfigManager.instance ??= new ConfigManager();
     return ConfigManager.instance;
   }
 

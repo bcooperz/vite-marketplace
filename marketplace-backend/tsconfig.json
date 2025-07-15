@@ -5,8 +5,8 @@
     "rootDir": "src",
     "baseUrl": ".",
     "paths": {
-      "@marketplace-types/*": ["../marketplace-types/dist/*"],
-      "@marketplace-types": ["../marketplace-types/dist"]
+      "@marketplace-types/*": ["../marketplace-types/src/*"],
+      "@marketplace-types": ["../marketplace-types/src"]
     }
   },
   "include": ["src/**/*.ts"],

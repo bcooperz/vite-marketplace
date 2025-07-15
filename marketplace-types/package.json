@@ -2,44 +2,44 @@
   "name": "@marketplace-types",
   "version": "1.0.0",
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js"
     },
     "./schemas": {
-      "types": "./dist/schemas/index.d.ts",
-      "import": "./dist/schemas/index.js"
+      "types": "./src/schemas/index.d.ts",
+      "import": "./src/schemas/index.js"
     },
     "./schemas/auth": {
-      "types": "./dist/schemas/auth.d.ts",
-      "import": "./dist/schemas/auth.js"
+      "types": "./src/schemas/auth.d.ts",
+      "import": "./src/schemas/auth.js"
     },
     "./schemas/common": {
-      "types": "./dist/schemas/common.d.ts",
-      "import": "./dist/schemas/common.js"
+      "types": "./src/schemas/common.d.ts",
+      "import": "./src/schemas/common.js"
     },
     "./types": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/types/index.js"
+      "types": "./src/types/index.d.ts",
+      "import": "./src/types/index.js"
     },
     "./types/payloadTypes": {
-      "types": "./dist/types/payloadTypes/index.d.ts",
-      "import": "./dist/types/payloadTypes/index.js"
+      "types": "./src/types/payloadTypes/index.d.ts",
+      "import": "./src/types/payloadTypes/index.js"
     },
     "./types/payloadTypes/auth": {
-      "types": "./dist/types/payloadTypes/auth.d.ts",
-      "import": "./dist/types/payloadTypes/auth.js"
+      "types": "./src/types/payloadTypes/auth.d.ts",
+      "import": "./src/types/payloadTypes/auth.js"
     },
     "./types/responseTypes": {
-      "types": "./dist/types/responseTypes/index.d.ts",
-      "import": "./dist/types/responseTypes/index.js"
+      "types": "./src/types/responseTypes/index.d.ts",
+      "import": "./src/types/responseTypes/index.js"
     },
     "./types/responseTypes/auth": {
-      "types": "./dist/types/responseTypes/auth.d.ts",
-      "import": "./dist/types/responseTypes/auth.js"
+      "types": "./src/types/responseTypes/auth.d.ts",
+      "import": "./src/types/responseTypes/auth.js"
     }
   },
   "scripts": {
