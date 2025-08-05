@@ -5,11 +5,13 @@ import "@/styles/global/variables.css";
 import "@/styles/index.css";
 import AppWrapper from "./components/bootstrapComponents/AppWrapper";
 import ErrorBoundary from "./components/ErrorBoundary";
+import { ToastContainer } from "react-toastify";
 
 const root = createRoot(document.getElementById("root")!);
 root.render(
   <StrictMode>
     <ErrorBoundary>
+      <ToastContainer position="top-center" autoClose={4000} />
       <AppWrapper />
     </ErrorBoundary>
   </StrictMode>,

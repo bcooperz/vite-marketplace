@@ -46,6 +46,8 @@ class AuthService {
     this.clearLogOutTimeout();
     this.clearReAuthTimeout();
     useAuthStore.getState().logoutStore();
+    // todo: Navigate to login page - or should this be a response to the auth state change?
+    // navigate("/login");
   }
 
   private setReAuthTimeout({ sessionExpiryTime }: { sessionExpiryTime: number }) {

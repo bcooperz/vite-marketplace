@@ -15,9 +15,17 @@ class DatabaseErrorClass extends AppError {
   static fromPgError(pgError: InstanceType<typeof DatabaseError>) {
     switch (pgError.code) {
       case "23505": // unique_violation
-        return new DatabaseErrorClass("Resource already exists", true, 409);
+        return new DatabaseErrorClass(
+          pgError.detail,
+          true,
+          HttpStatusCode.CONFLICT
+        );
       case "23503": // foreign_key_violation
-        return new DatabaseErrorClass("Related resource not found", true, 404);
+        return new DatabaseErrorClass(
+          pgError.detail,
+          true,
+          HttpStatusCode.NOT_FOUND
+        );
       case "42P01": // undefined_table
         return new DatabaseErrorClass(
           "Database configuration error",

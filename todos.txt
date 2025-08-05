@@ -1,3 +1,5 @@
+add eslitn and prettier as root dependencies to pnpm workspace?
+
 api docs
 
 setup shared tsconfig, jest, and eslint??

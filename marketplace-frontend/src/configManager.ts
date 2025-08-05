@@ -5,6 +5,7 @@ interface Config {
 class ConfigManager {
   private static instance: ConfigManager | null = null;
   private config: Config | null = null;
+  private configLoading = false;
 
   public static getInstance() {
     ConfigManager.instance ??= new ConfigManager();
@@ -12,7 +13,8 @@ class ConfigManager {
   }
 
   public async init() {
-    if (this.config) return;
+    if (this.config || this.configLoading) return;
+    this.configLoading = true;
 
     // todo: check if config value would be set immedietly after promise is resolved when called from another function
     // return requestFn<Config>({
@@ -31,6 +33,7 @@ class ConfigManager {
       .then((res) => res.json() as Promise<Config>)
       .then((data) => {
         this.config = data;
+        this.configLoading = false;
       });
   }
 

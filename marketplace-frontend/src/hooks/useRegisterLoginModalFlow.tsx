@@ -9,19 +9,17 @@ const useRegisterLoginModalFlow = () => {
     // todo: consider possible errors
     // e.g. network, already existing user, invalid password etc
     try {
-      const result = await createModal<boolean>((handlers) => (
+      // const result = await createModal<boolean>((handlers) => (
+      await createModal<boolean>((handlers) => (
         <Register
           onSuccessHandler={() => {
             handlers.handleOk(true);
           }}
         />
       ));
-      console.log("result", result);
     } catch (e) {
       console.log("error", e);
     }
-
-    console.log("opening login");
 
     // todo: consider if handlers are needed here
     const loginResult = await createModal<boolean>(() => (

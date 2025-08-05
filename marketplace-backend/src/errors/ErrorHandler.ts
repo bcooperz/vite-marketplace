@@ -1,13 +1,11 @@
 import Logger from "./classes/Logger.js";
-// todo: anyway to avoid importing from express or is this expected
-import { NextFunction, Response } from "express";
+import { Response } from "express";
 import AppError from "./classes/AppError.js";
 import { HttpStatusCode } from "./enums/HttpStatusCode.js";
 import pg from "pg";
 const { DatabaseError } = pg;
 import { z, ZodIssue } from "zod";
 import { ApiError, ValidationError } from "../types/api/error.types.js";
-import APIError from "./classes/APIError.js";
 import DatabaseErrorClass from "./classes/DatabaseErrorClass.js";
 
 const formatZodError = (error: ZodIssue): ValidationError => {
@@ -32,9 +30,8 @@ const formatValidationError = (errors: ValidationError[]): ApiError => {
   };
 };
 
-// todo: is this defined correctly, do basic recap for classes
 class ErrorHandler {
-  logger: Logger;
+  private logger: Logger;
 
   constructor(logger: Logger) {
     this.logger = logger;

@@ -1,0 +1,6 @@
+{
+  "watch": ["src", "../marketplace-types/src"],
+  "ext": "ts,js,json",
+  "ignore": ["dist", "node_modules"],
+  "exec": "tsx src/index.ts"
+}

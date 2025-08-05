@@ -9,7 +9,7 @@ export function createYearOptionElements() {
   for (let i = 0; i <= yearsToInclude; i++) {
     const year = startYear - i;
     yearOptions.push(
-      <option key={`year${year}`} value={`year${year}`}>
+      <option key={`year${year}`} value={year}>
         {year}
       </option>,
     );

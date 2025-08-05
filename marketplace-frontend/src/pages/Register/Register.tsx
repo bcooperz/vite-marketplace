@@ -6,10 +6,15 @@ import sharedClasses from "@/pages/App/App.module.css";
 import { getRegisterInputFn } from "@/lib/libraryWrappers/reactHookForm/utils";
 import RHFDOBInput from "@/components/RHFDOBInput/RHFDOBInput";
 import authenticationApiModules from "@/api/authenticationApiModules";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { registerSchema } from "./schemas";
+import type z from "zod";
+import { handleRHFError } from "@/api/util";
+import { error } from "console";
 
 /*
  TODOs
-  - Zod validation
+  - Display for server errors
   - Loading state
   - create login page
   - Add error handling
@@ -29,67 +34,76 @@ import authenticationApiModules from "@/api/authenticationApiModules";
   todo:
     Error handling todo
      - Create DOB component
-     - Display for server errors
 
   */
 
-interface ViewModel {
-  username: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  address: string;
-  dob: {
-    day: string;
-    month: string;
-    year: string;
-  };
-}
-
 const Register = ({ onSuccessHandler }: { onSuccessHandler?: () => void }) => {
-  const submitHandler: SubmitHandler<ViewModel> = async (values) => {
-    // Validate dob is a valid number
-    // call register api and callback function to allow parent to redirect or close modal etc
-    // todo: ensure credentials: true if CORS error
-
-    // const dob = new Date(values.dob.year, values.dob.month, values.dob.day);
-
-    const response = await authenticationApiModules.register({
-      email: values.email,
-      // username: values.username,
-      password: values.password,
-      firstName: values.firstName,
-      lastName: values.lastName,
-      // dob: dob.toISOString(),
-      // dob: "2025-01-01",
-    });
-
-    onSuccessHandler?.();
-    console.log(response);
-  };
-
-  // todo: add validation for dob as numbers within range
-  const { register, handleSubmit, formState, control } = useForm<ViewModel>({
+  const { register, handleSubmit, formState, control, setError } = useForm({
     mode: "onBlur",
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
+      confirmPassword: "",
       firstName: "",
       lastName: "",
-      email: "",
-      address: "",
       dob: {
         day: "",
         month: "",
         year: "",
       },
     },
-    // todo: add validation
-    // resolver: zodResolver(registerSchema),
+    resolver: zodResolver(registerSchema),
   });
 
   const { isSubmitting } = formState;
+
+  const submitHandler: SubmitHandler<z.infer<typeof registerSchema>> = async (values) => {
+    // call register api and callback function to allow parent to redirect or close modal etc
+
+    const dob = new Date(
+      Number(values.dob.year),
+      Number(values.dob.month),
+      Number(values.dob.day),
+    ).toISOString();
+
+    if (!dob) {
+      setError("dob", { message: "Invalid date of birth", type: "manual" });
+      return;
+    }
+
+    // todo: test different confirm password errors
+    // todo: make generic logic for error handling
+    //  - react query style, onErrorCallback and call reusable function or error handling in api layer?
+    //  - promise based, e.g. .then().catch()
+
+    /* 
+       - Error handling in api layer & resuasble fucntion with promise based approach?
+         = then ask AI to review
+      */
+    const response = await authenticationApiModules
+      .register(
+        {
+          email: values.email,
+          password: values.password,
+          confirmPassword: values.confirmPassword,
+          firstName: values.firstName,
+          lastName: values.lastName,
+          dob: dob,
+        },
+        (error) => {
+          console.log("error in register", error);
+          handleRHFError(error, setError);
+        },
+        (data) => {
+          console.log("success in register", data);
+          onSuccessHandler?.();
+        },
+      )
+      .catch((error) => {
+        console.log("error in register", error);
+      });
+    console.log("response in register", response);
+  };
 
   // todo: consider if this is the best way to register and get error messages / add functionality to input. should this be 2 hooks or separated somehow?
   const registerInput = getRegisterInputFn({ formState, register });
@@ -111,12 +125,6 @@ const Register = ({ onSuccessHandler }: { onSuccessHandler?: () => void }) => {
             placeholder="Last Name"
             {...registerInput("lastName", { required: true })}
           />
-          <FormInput
-            id="username"
-            placeholder="Username"
-            {...registerInput("username", { required: true })}
-            className={sharedClasses.columnSpan2}
-          />
           {/* todo: add email validation */}
           <FormInput
             id="email"
@@ -131,6 +139,13 @@ const Register = ({ onSuccessHandler }: { onSuccessHandler?: () => void }) => {
             {...registerInput("password", { required: true })}
             className={sharedClasses.columnSpan2}
           />
+          <FormInput
+            id="confirmPassword"
+            type="password"
+            placeholder="Confirm Password"
+            {...registerInput("confirmPassword", { required: true })}
+            className={sharedClasses.columnSpan2}
+          />
           <RHFDOBInput
             register={register}
             errors={formState.errors.dob}
@@ -140,6 +155,10 @@ const Register = ({ onSuccessHandler }: { onSuccessHandler?: () => void }) => {
             monthPath="month"
             yearPath="year"
           />
+        </div>
+        <div className={sharedClasses.errorMessage}>
+          {/* todo: add server errors */}
+          {formState.errors.root?.message && <p>{formState.errors.root?.message}</p>}
         </div>
         <button
           onClick={() => {

@@ -3,7 +3,6 @@ import SelectInput from "@/components/SelectInput";
 import sharedClasses from "@/pages/App/App.module.css";
 import classes from "@/components/DOBInput/DOBInput.module.css";
 import { createDayOptionElements, createYearOptionElements } from "@/pages/Register/util";
-import OptionPlaceholder from "@/components/SelectInput/OptionPlaceholder";
 import type { DetailedHTMLProps, Ref } from "react";
 
 interface SelectProps
@@ -39,7 +38,7 @@ const DOBInput = ({
 
   return (
     <div className={`${sharedClasses.columnSpan2} ${classes.dobContainer}`}>
-      <label htmlFor="months" className={sharedClasses.inputLabel}>
+      <label htmlFor="month" className={sharedClasses.inputLabel}>
         Date of Birth
         <RequiredAsterisk />
       </label>
@@ -83,7 +82,6 @@ const DOBInput = ({
           aria-errormessage={getErrorMessageElementId(yearProps.id)}
           {...yearProps}
         >
-          <OptionPlaceholder>Year</OptionPlaceholder>
           {yearOptions}
         </SelectInput>
       </div>

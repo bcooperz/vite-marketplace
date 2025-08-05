@@ -1,3 +1,13 @@
+import ConflictError from "@/errors/classes/ConflictError";
+import ForbiddenError from "@/errors/classes/ForbiddenError";
+import GenericServerError from "@/errors/classes/GenericServerError";
+import NetworkError from "@/errors/classes/NetworkError";
+import NetworkTimeoutError from "@/errors/classes/NetworkTimeoutError";
+import NotFoundError from "@/errors/classes/NotFoundError";
+import RequestCancelledError from "@/errors/classes/RequestCancelledError";
+import ServerValidationError from "@/errors/classes/ServerValidationError";
+import UnauthorizedError from "@/errors/classes/UnauthorizedError";
+import type { ApiErrors } from "@/errors/types";
 import AuthService from "@/services/authService";
 import type {
   AxiosRequestConfigWithMetadata,
@@ -5,8 +15,8 @@ import type {
   CancellablePromise,
 } from "@/types/axios";
 import { abortSymbol } from "@/types/axios";
-import type { AxiosRequestConfig, AxiosResponse, Method } from "axios";
-import axios from "axios";
+import type { AxiosError, AxiosRequestConfig, AxiosResponse, Method } from "axios";
+import axios, { HttpStatusCode } from "axios";
 
 // todo: add promise status codes and retry? (if i run into situation where this would be helpful)
 
@@ -19,18 +29,33 @@ const instance = axios.create({
   withCredentials: true,
 });
 
-const requestFn = <T, R = AxiosResponse<T>>({
+/**
+ * @throws {ApiErrors}
+ * @description
+ * - Creates an axios instance
+ * - Adds a request interceptor to the instance
+ * - Adds a response interceptor to the instance
+ * - Returns the instance
+ */
+const requestFn = <
+  T,
+  R = AxiosResponse<{ data: T; error: null } | { data: null; error: ApiErrors }>,
+>({
   method,
   path,
   payload,
   config = {},
   signal,
+  onError,
+  onSuccess,
 }: {
   path: string;
   method: Method;
   payload?: any;
   config?: AxiosRequestConfig;
   signal?: AbortSignal;
+  onError?: (error: ApiErrors) => void;
+  onSuccess?: (data: R) => void;
 }): CancellablePromise<R> => {
   const METHOD = method.toUpperCase();
   let abortController: AbortController | undefined = undefined;
@@ -62,7 +87,24 @@ const requestFn = <T, R = AxiosResponse<T>>({
 
   promise[abortSymbol] = abortController;
 
-  return promise;
+  return (
+    promise
+      .then((data) => {
+        onSuccess?.(data);
+        return {
+          error: null,
+          data: data,
+        };
+      })
+      // todo: this means the caller will not be able to handle the error - is this a problem?
+      .catch((error: ApiErrors) => {
+        onError?.(error);
+        return {
+          error: error,
+          data: null,
+        };
+      }) as CancellablePromise<R>
+  );
 };
 
 instance.interceptors.request.use(
@@ -93,10 +135,47 @@ instance.interceptors.response.use(
 
     return response;
   },
-  (error) => {
+  (error: AxiosError<ApiErrors>) => {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
-    return Promise.reject(error);
+
+    // Handle network errors
+    if (!error.response) {
+      if (error.code === "ECONNABORTED") {
+        return Promise.reject(new NetworkTimeoutError("Request timed out"));
+      }
+      if (error.code === "ERR_CANCELED") {
+        return Promise.reject(new RequestCancelledError("Request canceled"));
+      }
+      return Promise.reject(new NetworkError("Network error"));
+    }
+
+    // todo: update type
+    const { data, status } = error.response as AxiosResponse;
+
+    if (data.errors) {
+      // todo: consider if this is the best way to handle validation errors
+      return Promise.reject(new ServerValidationError(data.message, data.errors));
+    }
+
+    // todo: should these return more than just the error message?
+    switch (status) {
+      case HttpStatusCode.Unauthorized: {
+        AuthService.getInstance().logout();
+        return Promise.reject(new UnauthorizedError(data.message ?? "Unauthorized"));
+      }
+      case HttpStatusCode.Forbidden: {
+        return Promise.reject(new ForbiddenError(data.message ?? "Forbidden"));
+      }
+      case HttpStatusCode.NotFound: {
+        return Promise.reject(new NotFoundError(data.message ?? "Not found"));
+      }
+      case HttpStatusCode.Conflict: {
+        return Promise.reject(new ConflictError(data.message ?? "Conflict"));
+      }
+      default:
+        return Promise.reject(new GenericServerError(data.message ?? "Server error"));
+    }
   },
 );
 

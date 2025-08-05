@@ -29,8 +29,8 @@
     "express-session": "^1.18.1",
     "helmet": "^8.1.0",
     "pg": "^8.13.3",
-    "zod": "^3.24.2",
-    "@marketplace-types": "workspace:*"
+    "@marketplace-types": "workspace:*",
+    "zod": "*"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

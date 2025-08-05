@@ -10,9 +10,6 @@ import { HttpStatusCode } from "../errors/enums/HttpStatusCode.js";
 import NotFoundError from "../errors/classes/NotFoundError.js";
 import { database } from "../config/database.js";
 
-// todo: delete once I've used Zod elsewhere
-// todo: how can I connect types to frontend to match what backend returns
-
 export const displayHome = () => {};
 
 export const getUsers = async (
@@ -74,7 +71,6 @@ export const updateUser = async (
   response.status(HttpStatusCode.OK).send();
 };
 
-// todo
 export const deleteUser = (request: Request, response: Response) => {};
 
 export default {

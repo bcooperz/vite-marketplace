@@ -101,11 +101,21 @@ const RHFDOBInput = <
   return (
     <DOBInput
       dayProps={{
-        ...registerSelect(fullDayPath, { required: true }, "Day", dayPath as Path<FValues>),
+        ...registerSelect(
+          fullDayPath,
+          { required: true, min: 1, max: 31 },
+          "Day",
+          dayPath as Path<FValues>,
+        ),
         id: dayId,
       }}
       monthProps={{
-        ...registerSelect(fullMonthPath, { required: true }, "Month", monthPath as Path<FValues>),
+        ...registerSelect(
+          fullMonthPath,
+          { required: true, min: 1, max: 12 },
+          "Month",
+          monthPath as Path<FValues>,
+        ),
         id: monthId,
       }}
       yearProps={{

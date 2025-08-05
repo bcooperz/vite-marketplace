@@ -13,17 +13,13 @@ const ReAuthModal = ({ handleOk }: ReAuthModalProps) => {
       <p>Please re-authenticate to continue</p>
       <button
         onClick={async () => {
-          try {
-            // todo: would this always fail if user is not authenticated?
-            //       in which case I wouldn't need a log out timer in addition to the re-auth timer?
-            const response = await authenticationApi.reAuthenticate();
-            AuthService.getInstance().reAuthenticate({ updatedAt: response.data.updatedAt });
-            console.log("response", response);
+          // todo: would this always fail if user is not authenticated?
+          //       in which case I wouldn't need a log out timer in addition to the re-auth timer?
+          const response = await authenticationApi.reAuthenticate();
+          if (response.data.data) {
+            AuthService.getInstance().reAuthenticate({ updatedAt: response.data.data.updatedAt });
             handleOk(true);
-          } catch (error) {
-            // todo: test this
-            // Failed to re-authenticate so log out
-            console.error("Error re-authenticating", error);
+          } else {
             AuthService.getInstance().logout();
             handleOk(false);
           }

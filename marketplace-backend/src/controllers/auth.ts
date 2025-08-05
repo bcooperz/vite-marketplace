@@ -2,25 +2,29 @@ import {
   createUserParamsSchema,
   loginUserParamsSchema,
 } from "@marketplace-types";
-// todo: fix rootDir issue
 import bcrypt from "bcrypt";
 import { Router, Request, Response } from "express";
 import { database } from "../config/database.js";
 import NotFoundError from "../errors/classes/NotFoundError.js";
+import BadRequestError from "../errors/classes/BadRequestError.js";
 import { HttpStatusCode } from "../errors/enums/HttpStatusCode.js";
 
 const router = Router();
 
-// todo: add dob and username
 // todo: add response types
 const registerUser = async (req: Request, res: Response) => {
-  const { email, firstName, lastName, password } = createUserParamsSchema.parse(
-    req.body
-  );
+  const { email, firstName, lastName, password, dob, confirmPassword } =
+    createUserParamsSchema.parse(req.body);
+
+  if (password !== confirmPassword) {
+    // todo: should be a server validation error?
+    throw new BadRequestError("Passwords do not match");
+  }
+
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = await database.getPool().query({
-    text: "INSERT INTO users (email, password_hash, created_at, updated_at, first_name, last_name) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+    text: "INSERT INTO users (email, password_hash, created_at, updated_at, first_name, last_name, date_of_birth) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
     values: [
       email,
       hashedPassword,
@@ -28,6 +32,7 @@ const registerUser = async (req: Request, res: Response) => {
       new Date(),
       firstName,
       lastName,
+      dob,
     ],
   });
 
