@@ -15,6 +15,17 @@
 .pnpm-store/
 pnpm-lock.yaml
 
+# pem
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.p8
+*.p12
+*.p8
+*.p12
+
 #turbo
 .turbo
 
