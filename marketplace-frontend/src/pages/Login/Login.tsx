@@ -13,8 +13,7 @@ const Login = () => {
   const { login } = useAuth();
   const submitHandler: SubmitHandler<ViewModel> = async (values) => {
     // onSubmitHandler?.();
-    const response = await login(values.email, values.password);
-    console.log(response);
+    await login(values.email, values.password);
   };
 
   const {

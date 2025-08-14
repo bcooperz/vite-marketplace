@@ -21,6 +21,7 @@ import configRoutes from "./controllers/config.js";
 const app = express();
 const port = process.env.PORT || 3000;
 const logger = new Logger();
+
 const errorHandler = new ErrorHandler(logger);
 const errorManager = new ErrorManager(logger);
 

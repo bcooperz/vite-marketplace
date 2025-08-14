@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from "react";
 import bootstrap from "@/bootstrap";
-import { ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 const ModalProvider = React.lazy(() => import("@/context/ModalProvider.tsx"));
 const RouteProvider = React.lazy(() => import("@/components/RouteProvider.tsx"));
@@ -9,9 +9,15 @@ const AppWrapper = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [showModalProvider, setShowModalProvider] = useState(true);
+
   useEffect(() => {
     bootstrap()
-      .then(() => setIsLoading(false))
+      .then(() => {
+        toast.dismiss();
+        toast.success("Loaded");
+        setIsLoading(false);
+      })
       .catch((error) => {
         setError(error);
         setIsLoading(false);
@@ -28,12 +34,25 @@ const AppWrapper = () => {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      {/* // todo: Consider if toast should be in another microapp / react app */}
-      {/* todo: make toast display on top of page */}
-      <ToastContainer position="top-center" autoClose={4000} />
-      <ModalProvider>
+      {/* todo: remove this button after testing */}
+      <button
+        onClick={() => setShowModalProvider(!showModalProvider)}
+        style={{ marginTop: "6rem" }}
+      >
+        {showModalProvider ? "Remove Modal Provider" : "Add Modal Provider"}
+      </button>
+      {showModalProvider ? (
+        <ModalProvider>
+          <RouteProvider />
+        </ModalProvider>
+      ) : (
         <RouteProvider />
-      </ModalProvider>
+      )}
+
+      {/* // todo: Consider if toast should be in another microapp / react app */}
+      {/* <ModalProvider>
+        <RouteProvider />
+      </ModalProvider> */}
     </Suspense>
   );
 };

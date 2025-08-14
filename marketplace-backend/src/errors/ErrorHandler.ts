@@ -5,7 +5,7 @@ import { HttpStatusCode } from "./enums/HttpStatusCode.js";
 import pg from "pg";
 const { DatabaseError } = pg;
 import { z, ZodIssue } from "zod";
-import { ApiError, ValidationError } from "../types/api/error.types.js";
+import { ApiError, ValidationError } from "../types/api/error.js";
 import DatabaseErrorClass from "./classes/DatabaseErrorClass.js";
 
 const formatZodError = (error: ZodIssue): ValidationError => {

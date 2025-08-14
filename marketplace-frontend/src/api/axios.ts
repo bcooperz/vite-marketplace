@@ -17,6 +17,7 @@ import type {
 import { abortSymbol } from "@/types/axios";
 import type { AxiosError, AxiosRequestConfig, AxiosResponse, Method } from "axios";
 import axios, { HttpStatusCode } from "axios";
+import type { RequestFnResponseAxiosResponse, RequestFnSuccessResponse } from "./types";
 
 // todo: add promise status codes and retry? (if i run into situation where this would be helpful)
 
@@ -37,10 +38,7 @@ const instance = axios.create({
  * - Adds a response interceptor to the instance
  * - Returns the instance
  */
-const requestFn = <
-  T,
-  R = AxiosResponse<{ data: T; error: null } | { data: null; error: ApiErrors }>,
->({
+const requestFn = <T, R = RequestFnResponseAxiosResponse<T>>({
   method,
   path,
   payload,
@@ -55,7 +53,7 @@ const requestFn = <
   config?: AxiosRequestConfig;
   signal?: AbortSignal;
   onError?: (error: ApiErrors) => void;
-  onSuccess?: (data: R) => void;
+  onSuccess?: (data: RequestFnSuccessResponse<T>) => void;
 }): CancellablePromise<R> => {
   const METHOD = method.toUpperCase();
   let abortController: AbortController | undefined = undefined;
@@ -77,6 +75,7 @@ const requestFn = <
   } else if (METHOD === "PUT") {
     promise = instance.put(path, payload, { signal, ...config }) as CancellablePromise<R>;
   } else {
+    // todo: any way to avoid type casting this?
     promise = axios.request({
       method,
       url: path,
@@ -90,7 +89,7 @@ const requestFn = <
   return (
     promise
       .then((data) => {
-        onSuccess?.(data);
+        onSuccess?.(data as RequestFnSuccessResponse<T>);
         return {
           error: null,
           data: data,

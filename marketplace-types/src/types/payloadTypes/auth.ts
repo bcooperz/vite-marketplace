@@ -2,7 +2,7 @@ import {
   createUserParamsSchema,
   getUserByIdParamsSchema,
   loginUserParamsSchema,
-} from "../../schemas/auth";
+} from "../../schemas/auth.js";
 import { z } from "zod";
 
 export type CreateUserPayload = z.infer<typeof createUserParamsSchema>;

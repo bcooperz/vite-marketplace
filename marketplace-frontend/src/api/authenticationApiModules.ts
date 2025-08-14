@@ -7,7 +7,7 @@ import type {
 } from "@marketplace-types";
 import { requestFn } from "./axios";
 import type { ApiErrors } from "@/errors/types";
-import type { AxiosResponse } from "axios";
+import type { RequestFnSuccessResponse } from "./types";
 
 // const withErrorHandling = <T, E = ApiErrors>(
 //   promise: Promise<T>,
@@ -41,12 +41,7 @@ const authenticationApiModules = () => {
     register: (
       registerPayload: CreateUserPayload,
       onError?: (error: ApiErrors) => void,
-      onSuccess?: (
-        data: AxiosResponse<
-          // todo: create type for this
-          { data: RegisterResponse; error: null } | { data: null; error: ApiErrors }
-        >,
-      ) => void,
+      onSuccess?: (data: RequestFnSuccessResponse<RegisterResponse>) => void,
     ) => {
       return requestFn<RegisterResponse>({
         method: "POST",
@@ -57,11 +52,17 @@ const authenticationApiModules = () => {
         onSuccess,
       });
     },
-    login: (loginPayload: LoginUserPayload) => {
+    login: (
+      loginPayload: LoginUserPayload,
+      onError?: (error: ApiErrors) => void,
+      onSuccess?: (data: RequestFnSuccessResponse<LoginResponse>) => void,
+    ) => {
       return requestFn<LoginResponse>({
         method: "POST",
         path: `${subPath}/login`,
         payload: loginPayload,
+        onError,
+        onSuccess,
       });
     },
     reAuthenticate: () => {

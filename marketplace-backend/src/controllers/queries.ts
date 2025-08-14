@@ -5,7 +5,7 @@ import {
   updateUserBodySchema,
   updateUserParamsSchema,
 } from "@marketplace-types";
-import { InputType } from "../types/api/queries.types.js";
+import { InputType } from "../types/api/queries.js";
 import { HttpStatusCode } from "../errors/enums/HttpStatusCode.js";
 import NotFoundError from "../errors/classes/NotFoundError.js";
 import { database } from "../config/database.js";

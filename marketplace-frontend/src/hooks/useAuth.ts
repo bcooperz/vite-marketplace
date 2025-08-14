@@ -10,20 +10,23 @@ import useAuthStore from "@/stores/authStore";
 const useAuth = () => {
   const { isAuthenticated, user } = useAuthStore();
 
-  const login = async (email: string, password: string) => {
-    try {
-      const response = await authenticationApiModules.login({
+  const login = (email: string, password: string) => {
+    return authenticationApiModules.login(
+      {
         email,
         password,
-      });
-      AuthService.getInstance().login({
-        user: response.data.user,
-        updatedAt: response.data.updatedAt,
-      });
-    } catch (error) {
-      // todo: handle error
-      console.error(error);
-    }
+      },
+      (error) => {
+        console.log("error in login", error);
+      },
+      (data) => {
+        console.log("data in login", data);
+        AuthService.getInstance().login({
+          user: data.data.user,
+          updatedAt: data.data.updatedAt,
+        });
+      },
+    );
   };
 
   const logout = () => {

@@ -10,17 +10,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "./schemas";
 import type z from "zod";
 import { handleRHFError } from "@/api/util";
-import { error } from "console";
 
 /*
  TODOs
-  - Display for server errors
-  - Loading state
   - create login page
-  - Add error handling
   - Add toast notifications
   - validate security - XSS, CSRF
-  - sanitize inputs
   - Add unit and e2e tests
 
   - Maybe Later?

@@ -1,4 +1,4 @@
-add eslitn and prettier as root dependencies to pnpm workspace?
+add eslint and prettier as root dependencies to pnpm workspace?
 
 api docs
 

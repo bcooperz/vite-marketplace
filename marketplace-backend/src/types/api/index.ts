@@ -1,1 +1,1 @@
-export * from "./queries.types.js";
+export * from "./queries.js";

@@ -3,13 +3,7 @@ CSS
  - add vitest - https://vitest.dev/guide/why.html 
 
 Vite
- Build project layout
- Error handling
-  - Create wrapper for queries which has type for error and returns either data or error [error, data]
-    to avoid shortcomings of try catch which catches any error and isn't specific
- Routing: 
-   Code split for each route
-   ==Use outlet to render page inside of container
+ Routing:
    Use loaders to load data before user navigates
 
  Areas:
