@@ -1,11 +1,6 @@
 import type { User } from "@/types/user";
 import { create } from "zustand";
 
-/*
- todo: 
-  - implement functionality for when this logs user out
-*/
-
 interface AuthStore {
   isAuthenticated: boolean;
   user: User | null;

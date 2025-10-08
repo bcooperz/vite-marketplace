@@ -38,7 +38,11 @@ const instance = axios.create({
  * - Adds a response interceptor to the instance
  * - Returns the instance
  */
-const requestFn = <T, R = RequestFnResponseAxiosResponse<T>>({
+const requestFn = <
+  T,
+  R = RequestFnResponseAxiosResponse<T>,
+  ErrorPaths extends Record<string, string> = any,
+>({
   method,
   path,
   payload,
@@ -52,7 +56,7 @@ const requestFn = <T, R = RequestFnResponseAxiosResponse<T>>({
   payload?: any;
   config?: AxiosRequestConfig;
   signal?: AbortSignal;
-  onError?: (error: ApiErrors) => void;
+  onError?: (error: ApiErrors<ErrorPaths>) => void;
   onSuccess?: (data: RequestFnSuccessResponse<T>) => void;
 }): CancellablePromise<R> => {
   const METHOD = method.toUpperCase();

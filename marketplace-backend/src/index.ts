@@ -9,7 +9,7 @@ import { configureSecurityMiddleware } from "./middleware/rateLimiter.js";
 import cors from "cors";
 import { createSessionConfig } from "./config/session.js";
 import session from "express-session";
-import authRoutes from "./controllers/auth.js";
+import { createAuthRoutes } from "./controllers/auth.js";
 import requireAuth from "./middleware/requireAuth.js";
 import usersRoutes from "./controllers/users.js";
 import { database } from "./config/database.js";
@@ -17,6 +17,14 @@ import https from "https";
 import { getSslOptions } from "./util/getSslOptions.js";
 import updateSessionActivity from "./middleware/updateSessionActivity.js";
 import configRoutes from "./controllers/config.js";
+import { UserService } from "./services/UserService.js";
+import { UserRepository } from "./repositories/UserRepository.js";
+
+/*
+ - review code changes
+ - review note pad todos
+ - review past questions and look at associated code
+*/
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -24,6 +32,9 @@ const logger = new Logger();
 
 const errorHandler = new ErrorHandler(logger);
 const errorManager = new ErrorManager(logger);
+
+const userRepository = new UserRepository(database);
+const userService = new UserService(userRepository);
 
 const sslOptions = getSslOptions();
 
@@ -101,7 +112,7 @@ app.get("/", (request, response) => {
 const apiRoutes = Router();
 
 // Auth routes
-apiRoutes.use("/auth", authRoutes);
+apiRoutes.use("/auth", createAuthRoutes(userService));
 apiRoutes.use("/config", configRoutes);
 
 // User routes

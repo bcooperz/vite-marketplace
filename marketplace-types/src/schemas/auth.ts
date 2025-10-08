@@ -5,7 +5,7 @@ export const getUserByIdParamsSchema = z.object({
   id: commonValidators.id(),
 });
 
-export const createUserParamsSchema = z.object({
+export const registerParamsSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   dob: z.string().min(1, "Date of birth is required"),

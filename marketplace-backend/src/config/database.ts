@@ -1,8 +1,9 @@
 import pg from "pg";
+import { IPgDatabase } from "src/repositories/interfaces/PgDatabase.js";
 const { Pool } = pg;
 
 // todo: consider if there's a simpler way of implementing this while still using a singleton pattern
-class Database {
+class Database implements IPgDatabase {
   private pool: pg.Pool | null = null;
   private static instance: Database;
 
@@ -41,11 +42,12 @@ class Database {
   }
 
   // todo: fix params as it has multiple overloads
-  public async query(params: Parameters<pg.Pool["query"]>) {
+  // todo: type
+  public async query(params: any) {
     if (!this.pool) {
       throw new Error("Database not initialized");
     }
-    return this.pool.query(...params);
+    return this.pool.query(params);
   }
 
   public async checkDatabaseConnection() {

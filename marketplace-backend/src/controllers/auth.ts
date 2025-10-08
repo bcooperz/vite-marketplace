@@ -1,127 +1,140 @@
 import {
-  createUserParamsSchema,
+  registerParamsSchema,
   loginUserParamsSchema,
+  LoginResponse,
+  RegisterResponse,
+  ReAuthenticateResponse,
 } from "@marketplace-types";
 import bcrypt from "bcrypt";
 import { Router, Request, Response } from "express";
-import { database } from "../config/database.js";
 import NotFoundError from "../errors/classes/NotFoundError.js";
 import BadRequestError from "../errors/classes/BadRequestError.js";
 import { HttpStatusCode } from "../errors/enums/HttpStatusCode.js";
-
-const router = Router();
-
-// todo: add response types
-const registerUser = async (req: Request, res: Response) => {
-  const { email, firstName, lastName, password, dob, confirmPassword } =
-    createUserParamsSchema.parse(req.body);
-
-  if (password !== confirmPassword) {
-    // todo: should be a server validation error?
-    throw new BadRequestError("Passwords do not match");
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const user = await database.getPool().query({
-    text: "INSERT INTO users (email, password_hash, created_at, updated_at, first_name, last_name, date_of_birth) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
-    values: [
-      email,
-      hashedPassword,
-      new Date(),
-      new Date(),
-      firstName,
-      lastName,
-      dob,
-    ],
-  });
-
-  const userDetails = user.rows[0];
-
-  const lastUpdate = Date.now();
-  const lastActivity = new Date().toISOString();
-
-  // Session creation
-  req.session.user = {
-    id: userDetails.id,
-    email: email,
-    lastUpdate: lastUpdate,
-    lastActivity: lastActivity,
-  };
-
-  res.status(HttpStatusCode.CREATED).json({
-    user: {
-      email: email,
-      firstName: firstName,
-      lastName: lastName,
-    },
-    updatedAt: lastUpdate,
-  });
-};
+import { UserCreate } from "src/types/user/index.js";
+import { UserService } from "src/services/UserService.js";
 
 // todo: is this vulnerable to timing attacks?
-const loginUser = async (req: Request, res: Response) => {
-  const { email, password } = loginUserParamsSchema.parse(req.body);
+const getLoginUserRoute = (userService: UserService) => {
+  return async (req: Request, res: Response<LoginResponse>) => {
+    const { email, password } = loginUserParamsSchema.parse(req.body);
 
-  const user = await database
-    .getPool()
-    .query("SELECT * FROM users WHERE email = $1", [email]);
+    const user = await userService.getUserByEmail(email);
 
-  const userDetails = user.rows[0];
+    if (!user || !user.password_hash || !user.id) {
+      throw new NotFoundError();
+    }
 
-  if (!userDetails) {
-    throw new NotFoundError();
-  }
+    const isMatch = await bcrypt.compare(password, user.password_hash);
+    if (!isMatch) {
+      throw new NotFoundError();
+    }
 
-  const isMatch = await bcrypt.compare(password, user.rows[0].password_hash);
-  if (!isMatch) {
-    throw new NotFoundError();
-  }
+    const lastUpdate = new Date().getTime();
 
-  const lastUpdate = new Date().getTime();
+    // Session creation
+    req.session.user = {
+      id: user.id,
+      email: user.email,
+      lastActivity: new Date().toISOString(),
+      lastUpdate: lastUpdate,
+    };
 
-  // Session creation
-  req.session.user = {
-    id: userDetails.id,
-    email: userDetails.email,
-    lastActivity: new Date().toISOString(),
-    lastUpdate: lastUpdate,
+    res.status(HttpStatusCode.OK).json({
+      user: {
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+      },
+      updatedAt: lastUpdate,
+    });
   };
-
-  res.status(HttpStatusCode.OK).json({
-    user: {
-      email: userDetails.email,
-      firstName: userDetails.first_name,
-      lastName: userDetails.last_name,
-    },
-    updatedAt: lastUpdate,
-  });
 };
 
-const reAuthenticate = async (req: Request, res: Response) => {
-  const user = req.session.user;
+const getReAuthenticateRoute = () => {
+  return async (req: Request, res: Response<ReAuthenticateResponse>) => {
+    const user = req.session.user;
 
-  if (!user) {
-    throw new NotFoundError();
-  }
+    if (!user) {
+      throw new NotFoundError();
+    }
 
-  const lastUpdate = new Date().getTime();
+    const lastUpdate = new Date().getTime();
 
-  res.status(HttpStatusCode.OK).json({
-    user: {
-      email: user.email,
-    },
-    updatedAt: lastUpdate,
-  });
+    res.status(HttpStatusCode.OK).json({
+      user: {
+        email: user.email,
+      },
+      updatedAt: lastUpdate,
+    });
+  };
+};
+
+const getRegisterUserRoute = (userService: UserService) => {
+  return async (req: Request, res: Response<RegisterResponse>) => {
+    const { email, firstName, lastName, password, dob, confirmPassword } =
+      registerParamsSchema.parse(req.body);
+
+    if (password !== confirmPassword) {
+      throw new BadRequestError("Passwords do not match");
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user: UserCreate = {
+      password,
+      email,
+      firstName,
+      lastName,
+      dob: new Date(dob),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const userDetails = await userService.createUser(user, hashedPassword);
+
+    if (!userDetails.id) {
+      throw new BadRequestError("Failed to create user");
+    }
+
+    const lastUpdate = Date.now();
+    const lastActivity = new Date().toISOString();
+
+    // Session creation
+    req.session.user = {
+      id: userDetails.id,
+      email: email,
+      lastUpdate: lastUpdate,
+      lastActivity: lastActivity,
+    };
+
+    res.status(HttpStatusCode.CREATED).json({
+      user: {
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+      },
+      updatedAt: lastUpdate,
+    });
+  };
+};
+
+export const createAuthRoutes = (userService: UserService) => {
+  const router = Router();
+
+  router.post("/register", getRegisterUserRoute(userService));
+  router.post("/login", getLoginUserRoute(userService));
+  router.get("/reAuthenticate", getReAuthenticateRoute());
+  // router.post("/logout", logoutUser);
+
+  return router;
 };
 
 // const logoutUser: RequestHandler = async (req, res) => {
 //   const { email, password } = req.body;
 // };
 
-router.post("/register", registerUser);
-router.post("/login", loginUser);
-router.get("/reAuthenticate", reAuthenticate);
+// todo: remove?
+// router.post("/register", registerUser);
+// router.post("/login", loginUser);
+// router.get("/reAuthenticate", reAuthenticate);
 // router.post("/logout", logoutUser);
-
-export default router;

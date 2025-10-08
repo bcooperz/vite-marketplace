@@ -46,3 +46,7 @@ input[aria-invalid="true"] {
   border-color: red;
   border: 1px solid red;
 }
+
+ul {
+  margin: 0;
+}

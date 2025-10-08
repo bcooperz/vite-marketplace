@@ -4,6 +4,7 @@ import sharedClasses from "@/pages/App/App.module.css";
 import type { Props as SelectInputProps } from "@/components/SelectInput/types";
 import SelectInput from "@/components/SelectInput/SelectInput";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface Props extends SelectInputProps {
   /* todo: add error message logic, accessibility and styling -- see FormInput*/
 }

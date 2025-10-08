@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import {
-  createUserParamsSchema,
+  registerParamsSchema,
   getUserByIdParamsSchema,
   updateUserBodySchema,
   updateUserParamsSchema,
@@ -42,11 +42,11 @@ export const getUserById = async (
   response.status(HttpStatusCode.OK).json(user);
 };
 
-export const createUser = async (
-  request: Request<unknown, InputType<typeof createUserParamsSchema>>,
+export const registerUser = async (
+  request: Request<unknown, InputType<typeof registerParamsSchema>>,
   response: Response
 ) => {
-  // const { username, email } = createUserParamsSchema.parse(request.body);
+  // const { username, email } = registerParamsSchema.parse(request.body);
   // const results = await pool.query(
   //   "INSERT INTO users (name, email) VALUES ($1, $2)",
   //   [name, email]
@@ -76,7 +76,7 @@ export const deleteUser = (request: Request, response: Response) => {};
 export default {
   displayHome,
   getUsers,
-  createUser,
+  registerUser,
   getUserById,
   updateUser,
 };

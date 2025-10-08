@@ -9,7 +9,7 @@ import authenticationApiModules from "@/api/authenticationApiModules";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "./schemas";
 import type z from "zod";
-import { handleRHFError } from "@/api/util";
+import { handleRHFError } from "@/api/utils/handleRHFError";
 
 /*
  TODOs
@@ -75,28 +75,24 @@ const Register = ({ onSuccessHandler }: { onSuccessHandler?: () => void }) => {
        - Error handling in api layer & resuasble fucntion with promise based approach?
          = then ask AI to review
       */
-    const response = await authenticationApiModules
-      .register(
-        {
-          email: values.email,
-          password: values.password,
-          confirmPassword: values.confirmPassword,
-          firstName: values.firstName,
-          lastName: values.lastName,
-          dob: dob,
-        },
-        (error) => {
-          console.log("error in register", error);
-          handleRHFError(error, setError);
-        },
-        (data) => {
-          console.log("success in register", data);
-          onSuccessHandler?.();
-        },
-      )
-      .catch((error) => {
-        console.log("error in register", error);
-      });
+    const response = await authenticationApiModules.register({
+      payload: {
+        email: values.email,
+        password: values.password,
+        confirmPassword: values.confirmPassword,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        dob: dob,
+      },
+      onError: (error) => {
+        // todo: consider: error works because it should be a sub type of the form values, e.g. set error with any potential dob path
+        handleRHFError(error, setError);
+      },
+      onSuccess: (data) => {
+        console.log("success in register", data);
+        onSuccessHandler?.();
+      },
+    });
     console.log("response in register", response);
   };
 

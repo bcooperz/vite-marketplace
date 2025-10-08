@@ -2,10 +2,23 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import autoprefixer from "autoprefixer";
 import { resolve } from "path";
+import { visualizer } from "rollup-plugin-visualizer";
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react()],
+export default defineConfig(({ mode }) => ({
+  plugins: [
+    react(),
+    ...(mode === "analyze"
+      ? [
+          visualizer({
+            filename: "dist/stats.html",
+            open: true,
+            gzipSize: true,
+            brotliSize: true,
+          }),
+        ]
+      : []),
+  ],
   css: {
     postcss: {
       plugins: [autoprefixer],
@@ -22,4 +35,4 @@ export default defineConfig({
       cert: resolve(__dirname, "..", "localhost.pem"),
     },
   },
-});
+}));

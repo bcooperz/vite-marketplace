@@ -43,7 +43,7 @@ const HeaderNavigation = () => {
           </div>
           <div className={styles.flex}>
             <li>
-              <Link to="/test">Login</Link>
+              <Link to="/login">Login</Link>
             </li>
             <li>{<RegisterComponent />}</li>
           </div>
